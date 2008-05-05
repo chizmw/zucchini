@@ -1,0 +1,12 @@
+^Makefile$
+^Zucchini.*\.tar\.gz
+\.par$
+\.sw.$
+\.tmp$
+\.old$
+^blib
+^html
+^dist
+^pm_to_blib
+\.bak$
+\.sqlite3
