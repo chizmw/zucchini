@@ -22,5 +22,5 @@ can_ok(
 my $zucchini_cfg = Zucchini::Config->new();
 isa_ok($zucchini_cfg, q{Zucchini::Config});
 
-use Data::Dump qw(pp);
-diag pp($zucchini_cfg->get_data);
+#use Data::Dump qw(pp);
+#diag pp($zucchini_cfg->get_data);
