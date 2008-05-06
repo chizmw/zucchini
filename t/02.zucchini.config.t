@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 BEGIN {
     use_ok 'Zucchini::Config';
@@ -14,13 +14,39 @@ can_ok(
     qw(
         new
         get_data
+        get_options
+        get_site
+        set_site
+        get_siteconfig
+
+        is_fsync_only
+        is_rsync_only
+        is_verbose
 
         _load_config
     )
 );
 
-my $zucchini_cfg = Zucchini::Config->new();
+# evil globals
+my ($zucchini_cfg);
+
+# just create a ::Config object
+$zucchini_cfg = Zucchini::Config->new();
 isa_ok($zucchini_cfg, q{Zucchini::Config});
 
-#use Data::Dump qw(pp);
+use Data::Dump qw(pp);
 #diag pp($zucchini_cfg->get_data);
+#diag pp($zucchini_cfg->get_siteconfig);
+
+# just create a ::Config object
+$zucchini_cfg = Zucchini::Config->new(
+    {
+        site => 'herlpacker',
+    }
+);
+isa_ok($zucchini_cfg, q{Zucchini::Config});
+is(
+    $zucchini_cfg->get_site(),
+    q{herlpacker},
+    q{->get_site() returns correct value}
+);

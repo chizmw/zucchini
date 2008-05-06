@@ -13,6 +13,7 @@ inc/Module/Install/WriteAll.pm
 lib/Zucchini.pm
 lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
+lib/Zucchini/Template.pm
 lib/Zucchini/Version.pm
 Makefile.PL
 MANIFEST			This list of files

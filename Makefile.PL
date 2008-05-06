@@ -9,9 +9,14 @@ all_from        'lib/Zucchini.pm';
 
 # Specific dependencies
 requires(
+    'Carp'                          => 0, # core with perl5
     'Class::Std'                    => '0.0.8',
     'Config::Any'                   => '0.08',
+    'Digest::MD5'                   => '2.36',
+    'File::Copy'                    => '2.09',
+    'File::stat'                    => '1.00',
     'IO::File'                      => 0, # core since 5.00307
+    'Template'                      => '2.19',
 );
 
 # dependencies for building/testing

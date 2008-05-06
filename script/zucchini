@@ -1,11 +1,49 @@
-#!/usr/bin/env perl;
+#!/usr/bin/env perl
 # vim: ts=8 sts=4 et sw=4 sr sta
 use strict;
 use warnings;
 
+use Getopt::Long;
+use Pod::Usage;
 use Zucchini;
 
-exit;
+# evil globals
+my ($zucchini, %cliopt);
+
+# get command-line options from user
+GetOptions (
+    \%cliopt,
+    'dryrun',
+    'force',
+    'fsync+',
+    'fsync-only+',
+    'ftp',
+    'ftp-only',
+    'ftp-debug',
+    'help',
+    'quiet',
+    'rsync',
+    'rsync-only',
+    'showdestination',
+    'showpath',
+    'site=s',
+    'sites',
+    'verbose+',
+);
+
+if ($cliopt{help}) {
+    pod2usage(); # exits for us
+}
+
+# create a new zucchini object
+$zucchini = Zucchini->new(
+    \%cliopt
+);
+
+# call the high-level function that works out what needs doing ... and does it
+$zucchini->gogogo;
+
+exit; # all done
 
 __END__
 

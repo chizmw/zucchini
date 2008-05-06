@@ -5,10 +5,13 @@ use warnings;
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
+use Carp;
 use Config::Any;
 
 # no set method - we don't want any outside inteference
-my %data_of :ATTR( get => 'data' );
+my %data_of         :ATTR( get => 'data'                        );
+my %options_of      :ATTR( get => 'options',                    );
+my %site_of         :ATTR( get => 'site',       set => 'site',  );
 
 use Class::Std;
 {
@@ -16,6 +19,106 @@ use Class::Std;
         my ($self, $obj_ID, $arg_ref) = @_;
 
         $self->_load_config($obj_ID);
+    }
+
+    sub START {
+        my ($self, $obj_ID, $arg_ref) = @_;
+
+        # store the config/arg_ref for future reference
+        $options_of{$obj_ID} = $arg_ref;
+
+        # deal with user options
+        if ($arg_ref->{site}) {
+            $self->set_site( delete $arg_ref->{site} );
+        }
+
+        # if we don't have a site specified, try to use a default
+        if (not defined $self->get_site()) {
+            # set the default site (if specified in config file)
+            if (defined (my $default = $self->get_data()->{default_site})) {
+                $self->set_site($default);
+            }
+        }
+        return;
+    }
+
+    sub get_siteconfig {
+        my $self = shift;
+        my ($site, $siteconfig);
+
+        # get the site
+        $site = $self->get_site;
+
+        # make sure it's defined
+        if (not defined $site) {
+            carp "'site' is not defined";
+            return;
+        }
+
+        # fetch the config block for the specified site
+        $siteconfig = $self->get_data()->{site}{$site};
+
+        return $siteconfig;
+    }
+
+    sub ignored_directories {
+        my $self = shift;
+
+        my $ignored = $self->get_siteconfig()->{ignore_dirs};
+
+        if (ref($ignored) eq q{ARRAY}) {
+            # do nothing - it's already a list-ref
+        }
+        else {
+            $ignored = [ $ignored ];
+        }
+
+        return $ignored;
+    }
+
+    sub ignored_files {
+        my $self = shift;
+
+        my $ignored = $self->get_siteconfig()->{ignore_files};
+
+        if (ref($ignored) eq q{ARRAY}) {
+            # do nothing - it's already a list-ref
+        }
+        else {
+            $ignored = [ $ignored ];
+        }
+
+        return $ignored;
+    }
+
+    sub is_fsync_only {
+        my $self = shift;
+        return $self->get_options()->{'fsync-only'};
+    }
+
+    sub is_rsync_only {
+        my $self = shift;
+        return $self->get_options()->{'rsync-only'};
+    }
+
+    sub templated_files {
+        my $self = shift;
+
+        my $templated = $self->get_siteconfig()->{template_files};
+
+        if (ref($templated) eq q{ARRAY}) {
+            # do nothing - it's already a list-ref
+        }
+        else {
+            $templated = [ $templated ];
+        }
+
+        return $templated;
+    }
+
+    sub verbose {
+        my $self = shift;
+        return $self->get_options()->{'verbose'};
     }
 
     sub _load_config {
@@ -44,6 +147,41 @@ use Class::Std;
         }
 
         return;
+    }
+
+    sub _sane_config {
+        my $self    = shift;
+        my $errors  = 0;
+
+        my $site_config = $self->get_siteconfig();
+
+        # these entries should all exist (as top-level keys) in the site-config
+        foreach my $required_key (qw[
+            source_dir
+            includes_dir
+            output_dir
+            template_files
+            ignore_dirs
+            ignore_files
+            tags
+            rsync
+        ]) {
+            if (not exists $site_config->{$required_key}) {
+                warn qq{** configuration option missing: $required_key\n};
+                $errors++;
+            }
+        }
+
+        # these directories should exist
+        foreach my $required_dir (qw[source_dir includes_dir output_dir]) {
+            # dir should exist
+            if (not -d $site_config->{$required_dir}) {
+                warn qq{** directory missing: $site_config->{$required_dir}\n};
+                $errors++;
+            }
+        }
+
+        return (not $errors);
     }
 }
 

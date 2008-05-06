@@ -15,6 +15,7 @@ can_ok(
         new
         get_config
         set_config
+        gogogo
     )
 );
 
