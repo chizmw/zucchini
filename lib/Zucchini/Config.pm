@@ -117,8 +117,9 @@ use Class::Std;
     }
 
     sub verbose {
-        my $self = shift;
-        return $self->get_options()->{'verbose'};
+        my $self    = shift;
+        my $level   = shift || 1;
+        return ($self->get_options()->{'verbose'} >= $level);
     }
 
     sub _load_config {

@@ -253,7 +253,7 @@ use Class::Std;
             if (not $cliopt->{force}) {
                 if (not $self->file_modified("$directory/$item", "$config->{output_dir}/$relpath/$item")) {
                     warn "unchanged: " . $self->item_name($directory,$item) .  qq{\n}
-                        if ($self->get_config->verbose);
+                        if ($self->get_config->verbose(2));
                     return;
                 }
             }
@@ -274,7 +274,7 @@ use Class::Std;
             if (not $self->same_file("$directory/$item", "$config->{output_dir}/$relpath/$item")) {
                 warn (q{Copying: } . $self->item_name($directory, $item) . qq{\n});
                 copy("$directory/$item", "$config->{output_dir}/$relpath/$item");
-                show_destination($config, $cliopt, $directory, $item);
+                $self->show_destination($directory, $item);
             }
         }
 
