@@ -13,19 +13,17 @@ my ($zucchini, %cliopt);
 # get command-line options from user
 GetOptions (
     \%cliopt,
-    'dryrun',
-    'force',
-    'fsync+',
-    'fsync-only+',
-    'ftp',
-    'ftp-only',
+    'dry-run!',
+    'force!',
+    'fsync!',
+    'fsync-only!',
     'ftp-debug',
-    'help',
+    'help!',
     'quiet',
-    'rsync',
-    'rsync-only',
-    'showdestination',
-    'showpath',
+    'rsync!',
+    'rsync-only!',
+    'showdestination!',
+    'showpath!',
     'site=s',
     'sites',
     'verbose+',
@@ -59,11 +57,26 @@ TODO
 
 =head1 SYNOPSIS
 
-TODO
+  zucchini [options]
+
+    --site=LABEL    process the site called LABEL
+
+    --force         force all templates to be regenerated
+    --showpath      show paths relative from site's <source_dir>
+    --showdest      show full path to files written to site's <output_dir>
+
+    --rsync         transfer generated site to server using rsync
+    --rsync-only    transfer generated site to server using rsync
+                    [do not regenerate site first]
+
+    --dry-run       perform a dry-run of the rsync - do not transfer any files
+
+    --verbose       increase the verbosity of the script
+    --help          display this help information
 
 =head1 SEE ALSO
 
-Zuccnini
+Zucchini
 
 =head1 AUTHOR
 

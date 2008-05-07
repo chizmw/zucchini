@@ -91,9 +91,19 @@ use Class::Std;
         return $ignored;
     }
 
+    sub is_dry_run {
+        my $self = shift;
+        return $self->get_options()->{'dry-run'};
+    }
+
     sub is_fsync_only {
         my $self = shift;
         return $self->get_options()->{'fsync-only'};
+    }
+
+    sub is_rsync {
+        my $self = shift;
+        return $self->get_options()->{'rsync'};
     }
 
     sub is_rsync_only {
@@ -119,7 +129,7 @@ use Class::Std;
     sub verbose {
         my $self    = shift;
         my $level   = shift || 1;
-        return ($self->get_options()->{'verbose'} >= $level);
+        return (($self->get_options()->{'verbose'}||0) >= $level);
     }
 
     sub _load_config {

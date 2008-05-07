@@ -14,6 +14,7 @@ requires(
     'Config::Any'                   => '0.08',
     'Digest::MD5'                   => '2.36',
     'File::Copy'                    => '2.09',
+    'File::Rsync'                   => '0.42',
     'File::stat'                    => '1.00',
     'IO::File'                      => 0, # core since 5.00307
     'Template'                      => '2.19',

@@ -5,6 +5,7 @@ use warnings;
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 use Zucchini::Config;
+use Zucchini::Rsync;
 use Zucchini::Template;
 
 # object attributes
@@ -38,14 +39,23 @@ use Class::Std;
                 $self->get_config->is_fsync_only()
             )
         ) {
-            warn "commencing template processing phase\n";
             $self->process_templates;
         }
         # let verbose people know we're *NOT* processing any templates
         else {
             if ($self->get_config->verbose) {
-                warn "skipping template processing phase\n";
+                warn "Skipping template processing phase\n";
             }
+        }
+
+
+        # was a remote-sync requested?
+        if (
+            $self->get_config->is_rsync()
+                or 
+            $self->get_config->is_rsync_only()
+        ) {
+            $self->remote_sync;
         }
     }
 
@@ -61,6 +71,24 @@ use Class::Std;
         );
         # process the site
         $templater->process_site;
+
+        return;
+    }
+
+    sub remote_sync {
+        my $self = shift;
+        my ($rsyncer);
+
+        # create a new rsync object
+        $rsyncer = Zucchini::Rsync->new(
+            {
+                config => $self->get_config,
+            }
+        );
+        # process the site
+        $rsyncer->remote_sync;
+
+        return;
     }
 };
 

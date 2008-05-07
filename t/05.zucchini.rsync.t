@@ -13,6 +13,7 @@ can_ok(
     'Zucchini::Rsync',
     qw(
         new
+        remote_sync
     )
 );
 
