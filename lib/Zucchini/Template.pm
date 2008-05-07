@@ -185,7 +185,7 @@ use Class::Std;
         return;
     }
 
-    sub item_name($$$$) {
+    sub item_name {
         my $self = shift;
         my ($directory, $item) = @_;
         my ($filename);

@@ -19,11 +19,14 @@ can_ok(
         set_site
         get_siteconfig
 
+        ignored_directories
+        ignored_files
         is_fsync_only
         is_rsync_only
-        is_verbose
+        verbose
 
         _load_config
+        _sane_config
     )
 );
 
