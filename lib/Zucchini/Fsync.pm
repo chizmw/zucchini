@@ -55,11 +55,9 @@ use Class::Std;
             $config->{output_dir},
             q{digest.md5}
         );
-        warn "local: $local_digest_file\n";
         $remote_digest_file = file(
             $self->get_remote_digest
         );
-        warn "remote: $remote_digest_file\n";
 
         $local_md5_of   = $self->parse_md5file($local_digest_file);
         $remote_md5_of  = $self->parse_md5file($remote_digest_file) || {};
@@ -240,7 +238,7 @@ use Class::Std;
             $ftp->put('digest.md5');
         }
         else {
-            warn "FTP ERRORS - SORRY!\n";
+            warn qq{$errors error(s), digest file not transferred\n};
         }
     }
 
@@ -297,7 +295,6 @@ use Class::Std;
 
         # work out what needs to happen
         $transfer_actions = $self->build_transfer_actions;
-        #use Data::Dump qw(pp); die pp($transfer_actions);
 
         # do the remote update
         $self->set_ftp_root(
