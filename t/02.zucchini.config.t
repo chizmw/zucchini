@@ -15,6 +15,7 @@ can_ok(
         new
         get_data
         get_options
+        set_options
         get_site
         set_site
         get_siteconfig

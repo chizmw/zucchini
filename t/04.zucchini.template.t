@@ -21,6 +21,13 @@ can_ok(
     'Zucchini::Template',
     qw(
         new
+
+        get_config
+        set_config
+
+        get_ttobject
+        set_ttobject
+
         directory_contents
         file_checksum
         file_modified
