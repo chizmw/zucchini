@@ -9,6 +9,7 @@ use Carp;
 use Digest::MD5;
 use File::Copy;
 use File::stat;
+use Path::Class;
 use Template;
 
 # object attributes
@@ -57,7 +58,7 @@ use Class::Std;
         # loop through the items in the list and Do The Right Thing
         foreach my $item (@list) {
             # process individual files
-            if (-f qq{$directory/$item}) {
+            if (-f file($directory,$item)) {
                 # skip ignored files
                 if ($self->ignore_file($item)) {
                     next;
@@ -69,13 +70,13 @@ use Class::Std;
             }
 
             # process directories
-            elsif (-d qq{$directory/$item}) {
+            elsif (-d file($directory,$item)) {
                 # skip ignored dirs
                 if ($self->ignore_directory($item)) {
                     next;
                 }
 
-                my $outdir = qq{$config->{output_dir}/$relpath/$item};
+                my $outdir = dir($config->{output_dir}, $relpath, $item);
                 # make sure the directory exists in the output tree
                 if (! -d $outdir) {
                     warn "ouput directory '$outdir' does not exist\n";
@@ -88,14 +89,14 @@ use Class::Std;
                 }
 
                 # process the subdirectory
-                $self->process_directory(qq{$directory/$item});
+                $self->process_directory(dir($directory,$item));
                 next;
             }
 
             # not a file or directory?
             # we don't handle Odd Stuff (yet?)
             else {
-                warn "unhandled file-type for '$directory/$item\n";
+                warn "unhandled file-type for '" . dir($directory,$item) . "\n";
                 next;
             }
         }
@@ -200,9 +201,9 @@ use Class::Std;
         # if we want to see the relative path
         if ($cliopt->{showpath}) {
             # get the full path to the file
-            $filename = "$directory/$item";
+            $filename = file($directory,$item);
             # remove path to sourcedir
-            $filename =~ s{\A$config->{source_dir}/}{}xms;
+            $filename =~ s{\A$config->{source_dir}/?}{}xms;
         }
 
         return $filename;
@@ -251,7 +252,11 @@ use Class::Std;
             # if the template and the destination have the same timestamp, nothing's changed
             # HOWEVER, we only care if we're not forcing the template-output to be regenerated
             if (not $cliopt->{force}) {
-                if (not $self->file_modified("$directory/$item", "$config->{output_dir}/$relpath/$item")) {
+                if (not $self->file_modified(
+                        file($directory,$item),
+                        file($config->{output_dir},$relpath,$item)
+                    )
+                ) {
                     warn "unchanged: " . $self->item_name($directory,$item) .  qq{\n}
                         if ($self->get_config->verbose(2));
                     return;
@@ -261,19 +266,28 @@ use Class::Std;
             warn (q{templating: } . $self->item_name($directory, $item) . qq{\n});
             $self->show_destination($directory, $item);
 
+            # ->process doesn't like Path::Class thingies being thrown at it
+            # so we force it to Stringify
             $self->get_ttobject->process(
-                "$directory/$item",
+                file($directory,$item) . q{},    
                 $site_vars,
-                "$config->{output_dir}/$relpath/$item"
+                file($config->{output_dir},$relpath,$item) . q{}
             )
                 or Carp::croak ("\n" . $self->get_ttobject->error());
         }
         # others should be copied (if they've changed
         else {
             # only copy files if the MD5 hasn't changed
-            if (not $self->same_file("$directory/$item", "$config->{output_dir}/$relpath/$item")) {
+            if (not $self->same_file(
+                    file($directory,$item),
+                    file($config->{output_dir},$relpath,$item)
+                )
+            ) {
                 warn (q{Copying: } . $self->item_name($directory, $item) . qq{\n});
-                copy("$directory/$item", "$config->{output_dir}/$relpath/$item");
+                copy(
+                    file($directory,$item),
+                    file($config->{output_dir},$relpath,$item)
+                );
                 $self->show_destination($directory, $item);
             }
         }
@@ -292,7 +306,7 @@ use Class::Std;
         # remove source_dir from directory path
         $relpath =~ s:^$config->{source_dir}::;
         # remove leading / (if any)
-        $relpath =~ s:^/::;
+        $relpath =~ s:^/::;     # fixme - assuming unix system
 
         return $relpath;
     }
@@ -327,11 +341,19 @@ use Class::Std;
 
         if ($cliopt->{showdestination}) {
             if ($relpath) {
-                warn(qq{  --> $config->{output_dir}/$relpath/$item\n});
+                warn(
+                      q{  --> }
+                    . file($config->{output_dir},$relpath,$item)
+                    . qq{\n}
+                );
             }
             # top-level files don't have a relpath and we'd prefer not to have '//' in the path
             else {
-                warn(qq{  --> $config->{output_dir}/$item\n});
+                warn(
+                      q{  --> }
+                    . file($config->{output_dir},$item)
+                    . qq{\n}
+                );
             }
         }
 

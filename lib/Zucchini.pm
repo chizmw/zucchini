@@ -5,6 +5,7 @@ use warnings;
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 use Zucchini::Config;
+use Zucchini::Fsync;
 use Zucchini::Rsync;
 use Zucchini::Template;
 
@@ -57,6 +58,15 @@ use Class::Std;
         ) {
             $self->remote_sync;
         }
+
+        # was an ftp-sync requested?
+        if (
+            $self->get_config->is_fsync()
+                or 
+            $self->get_config->is_fsync_only()
+        ) {
+            $self->ftp_sync;
+        }
     }
 
     sub process_templates {
@@ -71,6 +81,22 @@ use Class::Std;
         );
         # process the site
         $templater->process_site;
+
+        return;
+    }
+
+    sub ftp_sync {
+        my $self = shift;
+        my ($fsyncer);
+
+        # create a new fsync object
+        $fsyncer = Zucchini::Fsync->new(
+            {
+                config => $self->get_config,
+            }
+        );
+        # process the site
+        $fsyncer->ftp_sync;
 
         return;
     }
@@ -112,7 +138,10 @@ TODO
 
 =head1 SEE ALSO
 
-Nothing
+L<Zucchini::Config>,
+L<Zucchini::Fsync>,
+L<Zucchini::Rsync>,
+L<Zucchini::Template>
 
 =head1 AUTHOR
 

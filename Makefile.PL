@@ -17,16 +17,20 @@ requires(
     'File::Rsync'                   => '0.42',
     'File::stat'                    => '1.00',
     'IO::File'                      => 0, # core since 5.00307
+    'Net::FTP'                      => '2.77',
+    'Path::Class'                   => '0.16',
     'Template'                      => '2.19',
 );
 
 # dependencies for building/testing
 build_requires(
+    'File::Find'                    => 0, # core with perl5
+    'File::Temp'                    => '0.18',
     'Test::More'                    => '0.72',
 );
 
 # recommended modules for the script to "be the best"
-# XXX does this actually do anything?
+# XXX does this actually do anything without auto_install?
 recommends (
     'Config::General'               => '2.37',
 );

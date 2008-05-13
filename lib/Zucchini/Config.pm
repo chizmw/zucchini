@@ -9,20 +9,24 @@ use Carp;
 use Config::Any;
 
 # no set method - we don't want any outside inteference
-my %data_of         :ATTR( get => 'data'                        );
-my %options_of      :ATTR( get => 'options',                    );
-my %site_of         :ATTR( get => 'site',       set => 'site',  );
+my %data_of         :ATTR( get => 'data'                            );
+my %options_of      :ATTR( get => 'options',    set => 'options'    );
+my %site_of         :ATTR( get => 'site',       set => 'site',      );
 
 use Class::Std;
 {
-    sub BUILD {
-        my ($self, $obj_ID, $arg_ref) = @_;
-
-        $self->_load_config($obj_ID);
-    }
-
     sub START {
         my ($self, $obj_ID, $arg_ref) = @_;
+
+        # we'll allow (clever) people to pass a hashref for the config
+        # (mostly useful for testing, but great for abuse too :) )
+        if (ref($arg_ref->{config_data})) {
+            $data_of{$obj_ID} = $arg_ref->{config_data};
+        }
+        # load the config file - this is the preferred, default behaviour
+        else {
+            $self->_load_config($obj_ID);
+        }
 
         # store the config/arg_ref for future reference
         $options_of{$obj_ID} = $arg_ref;
@@ -94,6 +98,11 @@ use Class::Std;
     sub is_dry_run {
         my $self = shift;
         return $self->get_options()->{'dry-run'};
+    }
+
+    sub is_fsync {
+        my $self = shift;
+        return $self->get_options()->{'fsync'};
     }
 
     sub is_fsync_only {

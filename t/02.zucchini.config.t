@@ -22,6 +22,7 @@ can_ok(
         ignored_directories
         ignored_files
         is_dry_run
+        is_fsync
         is_fsync_only
         is_rsync
         is_rsync_only

@@ -16,6 +16,8 @@ can_ok(
         get_config
         set_config
         gogogo
+        remote_sync
+        ftp_sync
     )
 );
 
