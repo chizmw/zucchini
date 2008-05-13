@@ -65,8 +65,29 @@ use Class::Std;
         $remote_md5_of  = $self->parse_md5file($remote_digest_file) || {};
 
         # run through the list of files we have locally
-        foreach my $relpath (sort keys %{$local_md5_of}) {
-            my $dirname = dirname($relpath);
+        foreach my $relpath (
+            sort { length($a) <=> length($b) } keys %{$local_md5_of}
+        ) {
+            my $dirname     = dirname($relpath);
+            my $parentdir   = dir($dirname)->parent();
+
+            # make sure our parent directory exists
+            # (prevents problems with nested dirs that contain no files)
+            while (
+                q{..} ne $parentdir
+                    and 
+                not exists $transfer_action_of{$parentdir}
+            ) {
+                # this is effectively a NO-OP that gets the directory name
+                # into the list of (required) remote directories
+                push @{$transfer_action_of{$parentdir}},
+                {
+                    action  => 'dir-dir',
+                };
+
+                # recurse upwards
+                $parentdir = $parentdir->parent();
+            }
 
             # does the file live in the server?
             if (exists $remote_md5_of->{$relpath}) {
@@ -157,10 +178,16 @@ use Class::Std;
             if (not $status) {
                 # verbose ouput
                 warn (q{MKDIR } . dir($default_dir, $dir) . qq{\n})
-                    if ($self->get_config->verbose(2));
+                    if ($self->get_config->verbose(1));
                 # make the missing directory
-                $ftp->mkdir($default_dir . $dir)
-                    or warn qq{failed to create $dir};
+                if (not $ftp->mkdir($default_dir . $dir)) {
+                    warn (
+                          q{FAILED MKDIR }
+                        . dir($default_dir, $dir) 
+                        . q{ - }
+                        . $ftp->message
+                        . qq{\n});
+                }
             }
         }
         # return to the default location
@@ -175,17 +202,26 @@ use Class::Std;
                 if ($action->{action} =~ m{\A(?:new|update)\z}) {
                     # verbose ouput
                     warn (
-                        q{PUT }
+                          q{PUT }
                         . $action->{relname}
                         . q{ }
                         . $action->{relname}
                         . qq{\n}
                     )
-                        if ($self->get_config->verbose(2));
+                        if ($self->get_config->verbose(1));
                     # send the file
                     if (not $ftp->put( $action->{relname}, $action->{relname} )) {
                         $errors++;
                         warn "failed to upload $action->{relname}\n";
+                        warn (
+                            q{FAILED PUT }
+                            . $action->{relname}
+                            . q{ }
+                            . $action->{relname}
+                            . q{ - }
+                            . $ftp->message
+                            . qq{\n}
+                        );
                     }
                 }
             }
@@ -193,7 +229,18 @@ use Class::Std;
 
         # if we didn't have any errors, upload the digest
         if (not $errors) {
+            # verbose ouput
+            warn (
+                  q{PUT }
+                . q{digest.md5}
+                . qq{\n}
+            )
+                if ($self->get_config->verbose(1));
+            # upload the digest file
             $ftp->put('digest.md5');
+        }
+        else {
+            warn "FTP ERRORS - SORRY!\n";
         }
     }
 
@@ -250,6 +297,7 @@ use Class::Std;
 
         # work out what needs to happen
         $transfer_actions = $self->build_transfer_actions;
+        #use Data::Dump qw(pp); die pp($transfer_actions);
 
         # do the remote update
         $self->set_ftp_root(
