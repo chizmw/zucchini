@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 # Define metadata
 name            'Zucchini';
-version         '0.0.1';
+version         '0.0.2';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
 all_from        'lib/Zucchini.pm';
 

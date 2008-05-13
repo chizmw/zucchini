@@ -13,6 +13,8 @@ inc/Module/Install/WriteAll.pm
 lib/Zucchini.pm
 lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
+lib/Zucchini/Fsync.pm
+lib/Zucchini/Rsync.pm
 lib/Zucchini/Template.pm
 lib/Zucchini/Version.pm
 Makefile.PL
@@ -26,4 +28,12 @@ t/00.use.t
 t/01.zucchini.t
 t/02.zucchini.config.t
 t/03.zucchini.config.create.t
+t/04.zucchini.template.t
+t/05.zucchini.rsync.t
+t/06.zucchini.fsync.t
+t/testdata/includes/footer.tt
+t/testdata/includes/header.tt
+t/testdata/templates/index.html
+t/testdata/templates/subdir1/index.html
+t/testlib/Zucchini/TestConfig.pm
 TODO

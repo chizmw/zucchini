@@ -35,4 +35,5 @@ requires:
   Net::FTP: 2.77
   Path::Class: 0.16
   Template: 2.19
-version: 0.0.1
+version: 0.0.2
+
