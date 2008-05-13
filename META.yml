@@ -24,8 +24,12 @@ requires:
   Class::Std: 0.0.8
   Config::Any: 0.08
   Digest::MD5: 2.36
+  File::Basename: 0
   File::Copy: 2.09
+  File::Find: 0
   File::Rsync: 0.42
+  File::Slurp: 9999.12
+  File::Temp: 0
   File::stat: 1.00
   IO::File: 0
   Net::FTP: 2.77
