@@ -8,6 +8,9 @@ use Test::More tests => 3;
 BEGIN {
     use_ok 'Zucchini::Config::Create';
 }
+BEGIN {
+    use File::Temp qw(tempfile);
+}
 
 can_ok(
     'Zucchini::Config::Create',
@@ -20,6 +23,8 @@ can_ok(
 my $zucchini_cfg_create = Zucchini::Config::Create->new();
 isa_ok($zucchini_cfg_create, q{Zucchini::Config::Create});
 
+my ($fh, $filename) = tempfile();
+
 $zucchini_cfg_create->write_default_config(
-    '/tmp/testcnf'
+    $filename
 );

@@ -3,10 +3,16 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 BEGIN {
     use_ok 'Zucchini';
+}
+
+BEGIN {
+    use FindBin;
+    use lib qq{$FindBin::Bin/testlib};
+    use Zucchini::TestConfig;
 }
 
 can_ok(
@@ -21,5 +27,16 @@ can_ok(
     )
 );
 
-my $zucchini = Zucchini->new();
+# evil globals
+my ($test_config, $zucchini);
+
+# get a test_config object
+$test_config = Zucchini::TestConfig->new();
+isa_ok($test_config, q{Zucchini::TestConfig});
+
+$zucchini = Zucchini->new(
+    {
+        config_data => $test_config->site_config
+    }
+);
 isa_ok($zucchini, q{Zucchini});

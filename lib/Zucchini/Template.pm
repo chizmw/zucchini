@@ -79,7 +79,7 @@ use Class::Std;
                 my $outdir = dir($config->{output_dir}, $relpath, $item);
                 # make sure the directory exists in the output tree
                 if (! -d $outdir) {
-                    warn "ouput directory '$outdir' does not exist\n";
+                    warn "output directory '$outdir' does not exist\n";
                     if (not mkdir($outdir)) {
                         carp "couldn't create output directory: $!";
                         exit;

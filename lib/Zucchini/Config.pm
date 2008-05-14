@@ -7,6 +7,7 @@ use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
 use Carp;
 use Config::Any;
+use Path::Class;
 
 # no set method - we don't want any outside inteference
 my %data_of         :ATTR( get => 'data'                            );
@@ -26,6 +27,15 @@ use Class::Std;
         # load the config file - this is the preferred, default behaviour
         else {
             $self->_load_config($obj_ID);
+        }
+
+        # if we don't have a config file - abort
+        if (not defined $self->get_data) {
+            warn (
+                  file($ENV{HOME}, q{.zucchini})
+                . qq{: configuration file not found\n}
+            );
+            exit;
         }
 
         # store the config/arg_ref for future reference
@@ -145,12 +155,13 @@ use Class::Std;
         my $self    = shift;
         my $obj_ID  = shift;
 
-        my $config_file = $ENV{HOME} . q{/.zucchini};
+        my $config_file = file($ENV{HOME}, q{/.zucchini});
 
         # read/load/parse the config file
         my $cfg = Config::Any->load_files(
             {
-                files => [ $config_file ],
+                files   => [ $config_file ],
+                use_ext => 0,
             }
         );
 
@@ -162,8 +173,8 @@ use Class::Std;
         }
 
         if (not defined $self->get_data()) {
-            warn "$config_file: no configuration data";
-            return undef;
+            warn "$config_file: no configuration data loaded\n";
+            return;
         }
 
         return;

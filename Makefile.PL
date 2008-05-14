@@ -11,7 +11,7 @@ all_from        'lib/Zucchini.pm';
 requires(
     'Carp'                          => 0, # core with perl5
     'Class::Std'                    => '0.0.8',
-    'Config::Any'                   => '0.08',
+    'Config::Any'                   => '0.09',
     'Digest::MD5'                   => '2.36',
     'File::Basename'                => 0, # core with perl5
     'File::Copy'                    => '2.09',

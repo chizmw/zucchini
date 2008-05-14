@@ -3,10 +3,16 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 BEGIN {
     use_ok 'Zucchini::Config';
+}
+
+BEGIN {
+    use FindBin;
+    use lib qq{$FindBin::Bin/testlib};
+    use Zucchini::TestConfig;
 }
 
 can_ok(
@@ -36,20 +42,25 @@ can_ok(
 );
 
 # evil globals
-my ($zucchini_cfg);
+my ($zucchini_cfg, $test_config);
 
-# just create a ::Config object
-$zucchini_cfg = Zucchini::Config->new();
-isa_ok($zucchini_cfg, q{Zucchini::Config});
-
-use Data::Dump qw(pp);
-#diag pp($zucchini_cfg->get_data);
-#diag pp($zucchini_cfg->get_siteconfig);
+# get a test_config object
+$test_config = Zucchini::TestConfig->new();
+isa_ok($test_config, q{Zucchini::TestConfig});
 
 # just create a ::Config object
 $zucchini_cfg = Zucchini::Config->new(
     {
-        site => 'herlpacker',
+        config_data => $test_config->site_config
+    }
+);
+isa_ok($zucchini_cfg, q{Zucchini::Config});
+
+# just create a ::Config object
+$zucchini_cfg = Zucchini::Config->new(
+    {
+        config_data => $test_config->site_config,
+        site => q{herlpacker},
     }
 );
 isa_ok($zucchini_cfg, q{Zucchini::Config});
