@@ -16,6 +16,7 @@ my ($zucchini, %cliopt);
 # get command-line options from user
 GetOptions (
     \%cliopt,
+    'create-config!',
     'dry-run!',
     'force!',
     'fsync!',
@@ -80,6 +81,8 @@ TODO
                     [do not regenerate site first]
 
     --dry-run       perform a dry-run of the rsync - do not transfer any files
+
+    --create-config write a new (sample) config file as ~/.zucchini
 
     --verbose       increase the verbosity of the script
                     can be used multiple times to increase further

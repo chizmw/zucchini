@@ -20,7 +20,7 @@ use Class::Std;
 
         if (-e $filename) {
             # TODO - copy file to file.TIMESTAMP and create new
-            warn "$filename already exists";
+            warn "$filename already exists\n";
             return;
         }
 
@@ -33,10 +33,43 @@ use Class::Std;
             print $fh <DATA>;
         }
         $fh->close;
+        close DATA;
     }
 };
 
 1;
+
+=head1 NAME
+
+Zucchini::Config::Create - write a sample configuration file
+
+=head1 DESCRIPTION
+
+TODO
+
+=head1 SYNOPSIS
+
+TODO
+
+=head1 SEE ALSO
+
+L<Zucchini>,
+L<Zucchini::Config>
+
+=head1 AUTHOR
+
+Chisel Wright C<< <chiselwright@users.berlios.de> >>
+
+=head1 LICENSE
+
+Copyright 2008 by Chisel Wright
+
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
+
+See <http://www.perl.com/perl/misc/Artistic.html>
+
+=cut
 
 __DATA__
 # which site configuration to use if none are specified on the command line

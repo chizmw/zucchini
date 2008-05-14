@@ -8,6 +8,7 @@ use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 use Carp;
 use Config::Any;
 use Path::Class;
+use Zucchini::Config::Create;
 
 # no set method - we don't want any outside inteference
 my %data_of         :ATTR( get => 'data'                            );
@@ -18,6 +19,21 @@ use Class::Std;
 {
     sub START {
         my ($self, $obj_ID, $arg_ref) = @_;
+
+        # if we've been asked to create a new config-file, do just that
+        # and exit
+        if ($arg_ref->{'create-config'}) {
+            my $zucchini_cfg_create = Zucchini::Config::Create->new();
+
+            $zucchini_cfg_create->write_default_config(
+                file($ENV{HOME}, q{.zucchini})
+            );
+
+            exit;
+        }
+
+        # store the config/arg_ref for future reference
+        $options_of{$obj_ID} = $arg_ref;
 
         # we'll allow (clever) people to pass a hashref for the config
         # (mostly useful for testing, but great for abuse too :) )
@@ -33,13 +49,10 @@ use Class::Std;
         if (not defined $self->get_data) {
             warn (
                   file($ENV{HOME}, q{.zucchini})
-                . qq{: configuration file not found\n}
+                . qq{: configuration file not found, use 'create-config' option to create one\n}
             );
             exit;
         }
-
-        # store the config/arg_ref for future reference
-        $options_of{$obj_ID} = $arg_ref;
 
         # deal with user options
         if ($arg_ref->{site}) {
@@ -173,7 +186,8 @@ use Class::Std;
         }
 
         if (not defined $self->get_data()) {
-            warn "$config_file: no configuration data loaded\n";
+            warn "$config_file: no configuration data loaded\n"
+                if ($self->verbose);
             return;
         }
 
