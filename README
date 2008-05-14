@@ -1,0 +1,23 @@
+NAME
+    Zucchini - turn templates into static websites
+
+DESCRIPTION
+    TODO
+
+SYNOPSIS
+    TODO
+
+SEE ALSO
+    Zucchini::Config, Zucchini::Fsync, Zucchini::Rsync, Zucchini::Template
+
+AUTHOR
+    Chisel Wright "<chiselwright@users.berlios.de>"
+
+LICENSE
+    Copyright 2008 by Chisel Wright
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+    See <http://www.perl.com/perl/misc/Artistic.html>
+
