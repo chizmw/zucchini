@@ -1,9 +1,11 @@
 This file documents the revision history for Zucchini
 
-0.0.3
+0.0.3   Wed May 14 20:24:15 BST 2008
     - moved ttsite.original to legacy/
     - no_index added for legacy/
     - --version option added to script/zucchini
+    - added --create-config
+    - fixed tests to work with ::TestConfig
 
 0.0.2   2008-05-13 23:17:50 +0100
     - fixed MANIFEST omissions
