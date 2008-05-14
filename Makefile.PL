@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 # Define metadata
 name            'Zucchini';
-version         '0.0.2';
+version         '0.0.3';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
 all_from        'lib/Zucchini.pm';
 
@@ -24,6 +24,7 @@ requires(
     'Net::FTP'                      => '2.77',
     'Path::Class'                   => '0.16',
     'Template'                      => '2.19',
+    'version'                       => 0, # core since 5.009
 );
 
 # dependencies for building/testing
@@ -39,6 +40,7 @@ recommends (
     'Config::General'               => '2.37',
 );
 
+no_index    'directory' => 'legacy';
 
 install_script 'script/zucchini';
 #auto_install;

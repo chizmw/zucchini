@@ -3,8 +3,11 @@
 use strict;
 use warnings;
 
+use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
+
 use Getopt::Long;
 use Pod::Usage;
+use version;
 use Zucchini;
 
 # evil globals
@@ -27,10 +30,17 @@ GetOptions (
     'site=s',
     'sites',
     'verbose+',
+    'version!'
 );
 
 if ($cliopt{help}) {
     pod2usage(); # exits for us
+}
+
+if ($cliopt{version}) {
+    my $vstring = version->new($VERSION)->normal;
+    print "Zucchini ($vstring)\n";
+    exit;
 }
 
 # create a new zucchini object
@@ -72,6 +82,8 @@ TODO
     --dry-run       perform a dry-run of the rsync - do not transfer any files
 
     --verbose       increase the verbosity of the script
+                    can be used multiple times to increase further
+    --version       output the version string
     --help          display this help information
 
 =head1 SEE ALSO

@@ -15,6 +15,7 @@ meta-spec:
 name: Zucchini
 no_index: 
   directory: 
+    - legacy
     - inc
     - t
 recommends: 
@@ -35,5 +36,5 @@ requires:
   Net::FTP: 2.77
   Path::Class: 0.16
   Template: 2.19
-version: 0.0.2
-
+  version: 0
+version: 0.0.3

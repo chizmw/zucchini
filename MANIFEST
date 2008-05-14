@@ -10,6 +10,7 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Scripts.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+legacy/ttsite.original
 lib/Zucchini.pm
 lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
@@ -22,7 +23,6 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 README
-script/ttsite.original
 script/zucchini
 t/00.use.t
 t/01.zucchini.t
