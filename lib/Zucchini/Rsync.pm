@@ -14,7 +14,7 @@ my %config_of   :ATTR( get => 'config',     set => 'config' );
 
 use Class::Std;
 {
-    sub BUILD {
+    sub START {
         my ($self, $obj_ID, $arg_ref) = @_;
 
         # store the Zucchini::Config object
@@ -99,15 +99,44 @@ Zucchini::Rsync - transfer files to remote server using rsync
 
 =head1 SYNOPSIS
 
-TODO
+  # create a new rsync object
+  $rsyncer = Zucchini::Rsync->new(
+    {
+      config => $self->get_config,
+    }
+  );
+
+  # transfer the site
+  $rsyncer->remote_sync;
 
 =head1 DESCRIPTION
 
-TODO
+This module implements the functionality to transfer files to the remote site
+using FTP.
+
+=head1 METHODS
+
+=head2 new
+
+Creates a new instance of the Zucchini Rsync object:
+
+  # create a new fsync object
+  $rsyncer = Zucchini::Rsync->new(
+    {
+      config => $zucchini->get_config,
+    }
+  );
+
+=head2 remote_sync
+
+This function performs an upload to the remote server using File::Rsync.
+
+  # transfer the site
+  $rsyncer->remote_sync;
 
 =head1 SEE ALSO
 
-L<Zucchini>,
+L<Zucchini>
 
 =head1 AUTHOR
 
