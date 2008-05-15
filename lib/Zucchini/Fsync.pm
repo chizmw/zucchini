@@ -23,18 +23,13 @@ my %remotedigest_of :ATTR( get => 'remote_digest'   set => 'remote_digest'  );
 
 use Class::Std;
 {
-    sub BUILD {
+    sub START {
         my ($self, $obj_ID, $arg_ref) = @_;
 
         # store the Zucchini::Config object
         $self->set_config(
             $arg_ref->{config}
         );
-
-        return;
-    }
-    sub START {
-        my ($self, $obj_ID, $arg_ref) = @_;
 
         # set up an ftp client/connection to work with
         if (defined $self->get_config) {
@@ -450,11 +445,177 @@ Zucchini::Fsync - transfer files to remote server using "ftp-sync"
 
 =head1 SYNOPSIS
 
-TODO
+  # create a new fsync object
+  $fsyncer = Zucchini::Fsync->new(
+    {
+      config => $self->get_config,
+    }
+  );
+
+  # transfer the site
+  $fsyncer->ftp_sync;
 
 =head1 DESCRIPTION
 
-TODO
+This module implements the functionality to transfer files to the remote site
+using FTP.
+
+Because it's slow, painful, annoying and just plain wasteful (of bandwidth)
+the module uses digest files to mimic a form of rsync-over-ftp.
+
+The first ftp-sync for any site will require a full upload, as there is no
+digest file to compare against. Subsequent transfers should only transfer
+modified files.
+
+=head1 METHODS
+
+=head2 new
+
+Creates a new instance of the top-level Zucchini object:
+
+  # create a new fsync object
+  $fsyncer = Zucchini::Fsync->new(
+    {
+      config => $zucchini->get_config,
+    }
+  );
+
+=head2 ftp_sync
+
+This is the top-level function that prepares data, and performs the remote
+upload.
+
+  # create a new fsync object
+  $fsyncer = Zucchini::Fsync->new(
+    {
+      config => $self->get_config,
+    }
+  );
+
+  # transfer the site
+  $fsyncer->ftp_sync;
+
+=head2 get_config
+
+Returns an object representing the current configuration.
+
+  # get the current configuration
+  $self->get_config;
+
+  # get the source_dir from the configuration object
+  $directory = $self->get_config->get_siteconfig->{source_dir};
+
+=head2 get_ftp_client
+
+Returns a Net::FTP object, logged-in to the remote server.
+
+  # make a remote directory
+  $fsyncer->get_ftp_client->mkdir( $dir );
+
+=head2 get_ftp_root
+
+Returns the remote directory to treat as the base directory on the remote
+server.
+
+  # change to the remote base directory
+  $fsyncer->get_ftp_client->cd(
+    $fsyncer->get_ftp_root
+  );
+
+=head2 get_remote_digest
+
+After the remote digest has been copied locally for comparison, this method
+will return the full path to the file.
+
+  # read the remote digest file into a scalar
+  use File::Slurp qw(read_file);
+  @digest_lines = read_file(
+    $fsyncer->get_remote_digest
+  );
+
+=head2 build_transfer_actions
+
+This method compares two digest files and determines the actions that are
+required to mirror the local digest remotely.
+
+Files not listed in either digest are ignored.
+
+  # get a list of actions to perform on the remote FTP server
+  $transfer_actions = $fsyncer->build_transfer_actions;
+
+The function returns a list of actions of the form:
+
+  [
+    'dirname' => {
+        action  => 'update|new|remove|dir-dir',
+        relname => $filename_relative_to_site_root,
+    },
+
+    ...
+  ]
+
+=head2 do_remote_update
+
+This function processes the results of build_transfer_actions() to perform the
+required actions on the remote FTP server.
+
+  # update files on the remote server
+  $fsyncer->do_remote_update($transfer_actions);
+
+=head2 fetch_remote_digest
+
+This function retrieves the digest file from the remote server, saves it
+locally, and sets the remote_digest attribute on the object, for later
+retrieval with get_remote_digest()
+
+  # get the remote digest
+  $self->fetch_remote_digest;
+
+=head2 local_ftp_wanted
+
+Used as the \&wanted in the call to File::Find::find() in conjunction with
+md5file() to build the list of digest records ("md5   filename") for the local
+output directory. 
+
+  # regenerate (local) md5s
+  find(
+    sub{
+      $fsyncer->local_ftp_wanted(\@md5strings);
+    },
+    $config->{output_dir}
+  );
+
+=head2 md5file
+
+Generates a single digest entry for a given file
+
+  # generate a digest entry
+  $entry = $fsyncer->md5file($file);
+
+=head2 parse_md5file
+
+Given an md5file returns a hash-ref of the form:
+
+  {
+    'file_with_path' => 'md5sum',
+    ...
+  }
+
+The method is primarily used in build_transfer_actions() to determine what
+actions need to be taken
+
+  # get md5 details from the digest file
+  $local_md5_of = $fsyncer->parse_md5file($local_digest_file);
+
+=head2 prepare_ftp_client
+
+This method creates an Net::FTP object, log in to the remote server and store
+the object for later retrieval using get_ftp_client().
+
+  # set up an ftp client/connection to work with
+  if (defined $self->get_config) {
+    $self->prepare_ftp_client;
+  }
 
 =head1 SEE ALSO
 
