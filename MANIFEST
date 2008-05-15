@@ -14,6 +14,7 @@ legacy/ttsite.original
 lib/Zucchini.pm
 lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
+lib/Zucchini/Contributors.pm
 lib/Zucchini/Fsync.pm
 lib/Zucchini/Rsync.pm
 lib/Zucchini/Template.pm
