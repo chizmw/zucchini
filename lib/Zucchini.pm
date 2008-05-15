@@ -154,7 +154,53 @@ a static copy of each processed template.
 
 You now have the source for a staic website, waiting to be uploaded
 to your remote server - which, conveniently, Zucchini can do for you;
-using rsync or ftp
+using rsync or ftp.
+
+Zucchini is usually invoked through the C<zucchini> script, which is installed
+as part of the package.
+
+=head1 METHODS
+
+=head2 new
+
+Creates a new instance of the top-level Zucchini object:
+
+  # create a new zucchini object
+  $zucchini = Zucchini->new(
+    \%cliopt
+  );
+
+=head2 gogogo
+
+This function is called from the C<zucchini> script and decides what
+actions to perform based on the command-line options passed to new()
+
+  # work out what to do, and Just Do It
+  $zucchini->gogogo;
+
+=head2 process_templates
+
+This function processes the template directories and outputs the static
+website source files.
+
+  # generate the static site
+  $zucchini->process_templates;
+
+=head2 ftp_sync
+
+This function transfers the static website source files to the remote server
+using an FTP solution.
+
+  # transfer files to remote FTP site
+  $zucchini->ftp_sync;
+
+=head2 remote_sync
+
+This function transfers the static website source files to the remote server
+using an rsync solution.
+
+  # transfer files to remote server, using rsync
+  $zucchini->remote_sync;
 
 =head1 SEE ALSO
 
