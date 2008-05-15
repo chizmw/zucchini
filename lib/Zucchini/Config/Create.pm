@@ -9,11 +9,6 @@ use IO::File;
 
 use Class::Std;
 {
-    sub BUILD {
-        my ($self, $obj_ID, $arg_ref) = @_;
-        return;
-    }
-
     sub write_default_config {
         my $self        = shift;
         my $filename    = shift;
@@ -43,13 +38,52 @@ use Class::Std;
 
 Zucchini::Config::Create - write a sample configuration file
 
-=head1 DESCRIPTION
-
-TODO
-
 =head1 SYNOPSIS
 
-TODO
+  # create a new object
+  $zucchini_cfg_create = Zucchini::Config::Create->new();
+
+  # write out a default config file
+  $zucchini_cfg_create->write_default_config(
+    file($ENV{HOME}, q{.zucchini})
+  );
+
+=head1 DESCRIPTION
+
+It's mean to expect people to pluck a configuration file out if thin air.
+
+This module's sole purpose is to write out a default .zucchini file to give
+users a fighting chance.
+
+=head1 METHODS
+
+=head2 new
+
+Creates a new instance of the top-level Zucchini object:
+
+  # create a new object
+  $zucchini_cfg_create = Zucchini::Config::Create->new();
+
+=head2 write_default_config
+
+Given a filename, write out the default/sample configuration file. If the file
+already exists it U<will not> be overwritten.
+
+  # write out a default config file
+  $zucchini_cfg_create->write_default_config(
+    file($ENV{HOME}, q{.zucchini})
+  );
+
+=head1 SAMPLE CONFIGURATION FILE
+
+The sample configuration file is supposed to be a reasonable example of how a
+functioning configuration file should look.
+
+You should be able to get up and running with Zucchini by creating the default
+file, and modifying the following variables:
+I<source_dir>, I<includes_dir>, I<output_dir>.
+
+You might also like to edit some of the values in the C<< <tags> >> section.
 
 =head1 SEE ALSO
 
@@ -118,7 +152,6 @@ default_site                'default'
         source_dir          '/path/to/tt_templates'
         includes_dir        '/path/to/tt_includes'
         output_dir          '/var/www/default_site/html'
-        website             'http://my.site.com/'
 
         plugin_base         MyPrefix::Template::Plugin
 
