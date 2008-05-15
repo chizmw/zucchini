@@ -347,7 +347,8 @@ use Class::Std;
                     . qq{\n}
                 );
             }
-            # top-level files don't have a relpath and we'd prefer not to have '//' in the path
+            # top-level files don't have a relpath and we'd prefer not to have
+            # '//' in the path
             else {
                 warn(
                       q{  --> }
@@ -387,17 +388,184 @@ __END__
 
 Zucchini::Template - process templates and output static files
 
-=head1 DESCRIPTION
-
-TODO
-
 =head1 SYNOPSIS
 
-TODO
+  # create a new templater object
+  $templater = Zucchini::Template->new(
+    { config => $self->get_config }
+  );
+  # process the site
+  $templater->process_site;
+
+=head1 DESCRIPTION
+
+This module handles the processing of the template files into the
+website source files.
+
+The solution uses Template::Toolkit and tries to Be Smart - only process
+that which has changed.
+
+An exception to this is when a globally included file, for example header.tt,
+has been modified. To apply this change to the site, one must either "touch"
+all the templates, or use the 'force' option.
+
+  # force all html files to be regenerated
+  $ find . -name \*html -exec touch {} \;
+  $ zucchini
+
+  # brute force approach to regenerate all files
+  $ zucchini --force
+
+=head1 METHODS
+
+=head2 new
+
+Creates a new instance of the top-level Zucchini object:
+
+  # create a new templater object
+  $templater = Zucchini::Template->new(
+    {
+        config => $zucchini->get_config,
+    }
+  );
+
+=head2 process_site
+
+Gets appropriate site-config, and initiates the template-processing.
+
+  # start the templating...
+  $templater->process_site;
+
+=head2 get_config / set_config
+
+Returns/sets an object representing the current configuration.
+
+  # get the current configuration
+  $self->get_config;
+
+  # get the source_dir from the configuration object
+  $directory = $self->get_config->get_siteconfig->{source_dir};
+
+=head2 get_ttobject / set_ttobject
+
+Returns/sets the Template Toolkit object:
+
+  # process the current item
+  $self->get_ttobject->process(
+    $template,
+    \%data,
+    $output_file
+  );
+
+=head2 process_directory
+
+Perform the I<appropriate action> for each item in the given directory:
+template or copy files; recurse directories. Ignore anything that should
+be ignored, as per the site-config.
+
+  # set off a cascading processing of the templates
+  $templater->process_directory( $template_root_directory );
+
+=head2 directory_contents
+
+Get a list of everything (except . and ..) in the given directory.
+
+  # get items in the site root
+  @list = $templater->directory_contents( $template_root_directory );
+
+=head2 file_checksum
+
+Calculate an MD5 checksum for a given file.
+
+  # get a checksum
+  $checksum = $templater->file_checksum( $file );
+
+=head2 file_modified
+
+Given two files - a template file and its templated output - determine if
+the template has been modified since the output was last generated.
+
+  # do something with a changed template
+  if ($self->file_modified($template, $output)) {
+    # do stuff
+  }
+
+=head2 ignore_directory
+
+Given a directory, determine if it should be ignored; useful for CVS/ and
+.svn/ directories. Uses 'ignored_dirs' from site-config.
+
+  # don't do anything with ignored directories
+  if ($self->ignore_directory($dir)) {
+    # next
+  }
+
+=head2 ignore_file
+
+Given a file, determine if it should be ignored; useful for editor swap files.
+Uses 'ignore_files' from site-config.
+
+  # don't do anything with ignored files
+  if ($self->ignore_file($file)) {
+    # next
+  }
+
+=head2 item_name
+
+Returns a filename, optionally formatted to include the full (destination)
+path if 'showpath' option is active.
+
+  # tell the user where we're putting something
+  print   "Writing: "
+        . $self->item_name($dir, $file)
+        . "\n";
+
+=head2 process_file
+
+Given a file take one of the following actions: template it, copy it, ignore
+it.
+
+  # process the current file
+  $self->process_file($dir, $file)
+
+=head2 relative_path_from_full
+
+This catchily named function returns the relative path to a directory,
+from the template source dir; 'source_dir' in the site-config.
+
+  # get the relative path ...
+  $relpath = $self->relative_path_from_full( $dir );
+
+=head2 same_file
+
+Determine if two files are the same. Primarily used to avoid copying unchanged
+files.
+
+  if(not $self->same_file($file1, $file2)) {
+    # do stuff
+  }
+
+=head2 show_destination
+
+If the 'showdestination' option is active, output where we are writing a file
+to.
+
+  # let user know where we're putting the item
+  $self->show_destination($directory, $item);
+  
+=head2 template_file
+
+Detemine if the file should be treated as a template. Template files are
+specified by the 'template_files' variable in the site-config.
+
+  if ($self->template_file($item)) {
+    # do some templating magic
+  }
 
 =head1 SEE ALSO
 
-L<Zucchini>
+L<Zucchini>,
+L<Zucchini::Config>
 
 =head1 AUTHOR
 
