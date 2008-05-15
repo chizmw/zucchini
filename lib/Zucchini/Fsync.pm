@@ -471,7 +471,7 @@ modified files.
 
 =head2 new
 
-Creates a new instance of the top-level Zucchini object:
+Creates a new instance of the Zucchini Fsync object:
 
   # create a new fsync object
   $fsyncer = Zucchini::Fsync->new(

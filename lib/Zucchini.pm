@@ -95,7 +95,7 @@ use Class::Std;
                 config => $self->get_config,
             }
         );
-        # process the site
+        # transfer the site
         $fsyncer->ftp_sync;
 
         return;
@@ -111,7 +111,7 @@ use Class::Std;
                 config => $self->get_config,
             }
         );
-        # process the site
+        # transfer the site
         $rsyncer->remote_sync;
 
         return;

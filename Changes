@@ -1,5 +1,9 @@
 This file documents the revision history for Zucchini
 
+0.0.4
+    - added Contributors
+    - added lots of documentation for modules
+
 0.0.3   Wed May 14 20:24:15 BST 2008
     - moved ttsite.original to legacy/
     - no_index added for legacy/
