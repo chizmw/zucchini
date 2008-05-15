@@ -1,3 +1,4 @@
+ - HTML validation
  - check for 'over generous' file permissions if we have ftp/password in
    config
  - allow rsync with username (that differs from local machine)

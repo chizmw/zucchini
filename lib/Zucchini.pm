@@ -128,20 +128,41 @@ __END__
 
 Zucchini - turn templates into static websites
 
-=head1 DESCRIPTION
-
-TODO
-
 =head1 SYNOPSIS
 
-TODO
+  $ zucchini --create-config    # create a default config
+
+  $ perldoc Zucchini::Config    # information for configuring Zucchini
+
+  $ perldoc zucchini            # the worker script
+
+=head1 DESCRIPTION
+
+You have a hosted website. It's static. Your website has the
+same headers, footers, menu, etc.
+
+Copying the same change from the header section in one file into
+the other fifty-eight files in your site is boring.
+It's also prone to error.
+
+Ideally the site would be written using some kind of templating
+system, so header files et al only needed to be updated once.
+
+This is where Zucchini comes in. Zucchini processes a directory
+of templates (written using L<Template::Toolkit> markup) and outputs
+a static copy of each processed template.
+
+You now have the source for a staic website, waiting to be uploaded
+to your remote server - which, conveniently, Zucchini can do for you;
+using rsync or ftp
 
 =head1 SEE ALSO
 
 L<Zucchini::Config>,
 L<Zucchini::Fsync>,
 L<Zucchini::Rsync>,
-L<Zucchini::Template>
+L<Zucchini::Template>,
+L<Template>
 
 =head1 AUTHOR
 
