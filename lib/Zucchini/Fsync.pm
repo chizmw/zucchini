@@ -270,9 +270,8 @@ use Class::Std;
         my (@md5strings, $transfer_actions);
 
         # make sure we have an ftp client to use
-        $self->prepare_ftp_client;
         if (not defined $self->get_ftp_client) {
-            warn(qq{Failed to connect to remote FTP server. Aborting upload.\n});
+            warn(qq{Failed to obtain remote FTP connection. Aborting upload.\n});
             return;
         }
 
