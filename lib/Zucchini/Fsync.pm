@@ -248,7 +248,10 @@ use Class::Std;
 
         # get the (remote) digest file
         $get_ok = $self->get_ftp_client->get(
-            q{digest.md5},
+            file(
+                $self->get_ftp_root(),
+                q{digest.md5}
+            ),
             $filename
         );
         if (not $get_ok) {
@@ -292,9 +295,6 @@ use Class::Std;
         $transfer_actions = $self->build_transfer_actions;
 
         # do the remote update
-        $self->set_ftp_root(
-            $config->{'ftp'}{'path'} || '/'
-        );
         $self->do_remote_update($transfer_actions);
 
         return;
@@ -414,9 +414,9 @@ use Class::Std;
                 return;
             }
             # try to cwd, if required
-            if (defined $config->{ftp}{working_dir}) {
-                if (not $ftp->cwd( $config->{ftp}{working_dir} ) ) {
-                    warn(qq{Cannot change directory to $config->{ftp}{working_dir}\n});
+            if (defined $config->{ftp}{path}) {
+                if (not $ftp->cwd( $config->{ftp}{path} ) ) {
+                    warn(qq{Cannot change directory to $config->{ftp}{path}\n});
                     return;
                 }
             }
@@ -425,6 +425,11 @@ use Class::Std;
                 warn(qq{Failed to set binary mode\n});
                 return;
             }
+
+            # set our FTP_ROOT based on where we are now
+            $self->set_ftp_root(
+                $ftp->pwd()
+            );
 
             $self->set_ftp_client($ftp);
         }
