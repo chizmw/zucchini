@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # from mst on #catalyst
-our $VERSION = '0.000005'; $VERSION = eval $VERSION;
+our $VERSION = '0.000006'; $VERSION = eval $VERSION;
 
 =head1 NAME
 
