@@ -5,7 +5,9 @@ use inc::Module::Install;
 name            'Zucchini';
 version         '0.0.6';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
-all_from        'lib/Zucchini.pm';
+license         'perl';
+abstract        'turn templates into static websites';
+
 
 # Specific dependencies
 requires(
