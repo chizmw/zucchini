@@ -75,7 +75,7 @@ use Class::Std;
                         path      => "/somewhere/",
                         username  => "ftpuser",
                     },
-                    ftp_ignore_dirs => [
+                    __ftp_ignore_dirs => [
                         "CVS",
                         ".svn",
                         "tmp",
@@ -92,15 +92,30 @@ use Class::Std;
                         email       => "c&#104;isel&#64;chizography.net",
                     },
                 },
+                'second_site' => {
+                    source_dir      => 'XXWILLBEOVERRIDDENXX',
+                    includes_dir    => 'XXWILLBEOVERRIDDENXX',
+                    output_dir      => 'XXWILLBEOVERRIDDENXX',
+                    template_files  => "\\.html\\z",
+                    ignore_dirs     => ["CVS", ".svn", "tmp"],
+                    ignore_files    => "\\.swp\\z",
+                    tags => {
+                        author      => "Chisel Wright",
+                        copyright   => "&copy; 2006-2008 Chisel Wright. All rights reserved.",
+                        email       => "c&#104;isel&#64;chizography.net",
+                    },
+                },
             },
         };
 
         # override some values (because they're dynamic in some way)
-        my $site_data = $test_config->{site}{testdata};
-        $site_data->{includes_dir}    = $self->get_includedir;
-        $site_data->{source_dir}      = $self->get_templatedir;
-        $site_data->{output_dir}      = $self->get_outputdir;
-        $site_data->{rsync}{path}     = $self->get_rsyncpath;
+        foreach my $site (keys %{ $test_config->{site} }) {
+            my $site_data = $test_config->{site}{$site};
+            $site_data->{includes_dir}    = $self->get_includedir;
+            $site_data->{source_dir}      = $self->get_templatedir;
+            $site_data->{output_dir}      = $self->get_outputdir;
+            $site_data->{rsync}{path}     = $self->get_rsyncpath;
+        }
 
         return $test_config;
     }

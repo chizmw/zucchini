@@ -60,12 +60,12 @@ isa_ok($zucchini_cfg, q{Zucchini::Config});
 $zucchini_cfg = Zucchini::Config->new(
     {
         config_data => $test_config->site_config,
-        site => q{herlpacker},
+        site => q{second_site},
     }
 );
 isa_ok($zucchini_cfg, q{Zucchini::Config});
 is(
     $zucchini_cfg->get_site(),
-    q{herlpacker},
+    q{second_site},
     q{->get_site() returns correct value}
 );
