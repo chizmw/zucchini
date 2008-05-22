@@ -6,6 +6,12 @@ use warnings;
 # from mst on #catalyst
 our $VERSION = '0.000006'; $VERSION = eval $VERSION;
 
+# this is a dummy package to provide POD
+
+1;
+
+__END__
+
 =head1 NAME
 
 Zucchini::Version - The Zucchini project-wide version number
@@ -41,5 +47,3 @@ the same terms as Perl itself.
 See <http://www.perl.com/perl/misc/Artistic.html>
 
 =cut
-
-1;
