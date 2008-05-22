@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 # Define metadata
 name            'Zucchini';
-version         '0.0.6';
+version         '0.0.7';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
 license         'perl';
 abstract        'turn templates into static websites';
@@ -22,6 +22,7 @@ requires(
     'File::Slurp'                   => '9999.12',
     'File::stat'                    => '1.00',
     'File::Temp'                    => 0, # core since 5.006001
+    'HTML::Lint'                    => '2.02',
     'IO::File'                      => 0, # core since 5.00307
     'Net::FTP'                      => '2.77',
     'Path::Class'                   => '0.16',

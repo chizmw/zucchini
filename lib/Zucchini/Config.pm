@@ -481,6 +481,15 @@ One I<ignore_files> statement is required for each file to be ignored.
 The value used should be a perl regexp that can be applied to a filename.
 If in doubt, copy an existing rule and modify the '.html'.
 
+=item lint_check
+
+Found in a "sitelabel" block, this option enables HTML error checking.
+While not as thorough as a full W3C validator, this option should alert you to
+commons errors.
+
+    # check for HTML errors
+    lint_check 1
+
 =item <tags>
 
 This block, found in a "sitelabel" block, is used to set variables that

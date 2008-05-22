@@ -9,16 +9,17 @@ use Carp;
 use Digest::MD5;
 use File::Copy;
 use File::stat;
+use HTML::Lint;
 use Path::Class;
 use Template;
 
 # object attributes
 my %config_of   :ATTR( get => 'config',     set => 'config' );
-my %ttobject_of :ATTR( get => 'ttobject',   set => 'ttobject' );
+my %ttobject_of :ATTR( get => 'ttobject',   set => 'ttobject'   );
 
 use Class::Std;
 {
-    sub BUILD {
+    sub START {
         my ($self, $obj_ID, $arg_ref) = @_;
 
         # store the Zucchini::Config object
@@ -274,6 +275,31 @@ use Class::Std;
                 file($config->{output_dir},$relpath,$item) . q{}
             )
                 or Carp::croak ("\n" . $self->get_ttobject->error());
+
+            # if we're doing lint-checking
+            if ($self->get_config()->get_siteconfig()->{lint_check}) {
+                # check for HTML errors in file
+                if ($item =~ m{\.html?\z}) {
+                    # create a new HTML::Lint object
+                    my $lint = HTML::Lint->new();
+
+                    $lint->parse_file(
+                        file($config->{output_dir},$relpath,$item) . q{}
+                    );
+                    foreach my $error ( $lint->errors ) {
+                        # let the user know where and what the error is
+                        warn (
+                              q{!! }
+                            . $self->item_name($directory, $item)
+                            . q{: line }
+                            . $error->line
+                            . q{: }
+                            . $error->errtext
+                            . qq{\n}
+                        );
+                    }
+                }
+            }
         }
         # others should be copied (if they've changed
         else {

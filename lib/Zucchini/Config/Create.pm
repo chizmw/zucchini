@@ -123,6 +123,8 @@ default_site   default
 
         ignore_files        \.swp\z
 
+        lint_check          1
+
         <tags>
             author          Joe Bloggs
             email           joe@localhost
@@ -153,6 +155,8 @@ default_site   default
         ignore_dirs         .svn
 
         ignore_files        \.swp\z
+
+        lint_check          1
 
         <tags>
             author          Joe Bloggs

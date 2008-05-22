@@ -1,5 +1,8 @@
 This file documents the revision history for Zucchini
 
+0.0.7
+    - added HTML error checking (HTML::Lint)
+
 0.0.6   Thu May 22 08:56:06 BST 2008
     - only show missing digest warnings if we're verbose enough
     - only try to prepare remote FTP connection once
