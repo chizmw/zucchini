@@ -4,9 +4,11 @@ use strict;
 use warnings;
 
 # from mst on #catalyst
-our $VERSION = '0.000006'; $VERSION = eval $VERSION;
+use version; our $VERSION = qv(0.0.6)->numify;
 
-# this is a dummy package to provide POD
+package Zucchini::Version;
+
+our $VERSION = $Zucchini::VERSION;
 
 1;
 
