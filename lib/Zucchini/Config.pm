@@ -66,6 +66,13 @@ use Class::Std;
                 $self->set_site($default);
             }
         }
+
+        # make sure out config is sane
+        if (not $self->_sane_config) {
+            warn "configuration file is not valid\n";
+            exit;
+        }
+
         return;
     }
 
@@ -78,7 +85,7 @@ use Class::Std;
 
         # make sure it's defined
         if (not defined $site) {
-            carp "'site' is not defined";
+            warn "'site' is not defined\n";
             return;
         }
 
@@ -200,6 +207,11 @@ use Class::Std;
 
         my $site_config = $self->get_siteconfig();
 
+        if (not defined $site_config) {
+            warn "site-specific configuration block is missing\n";
+            return;
+        }
+
         # these entries should all exist (as top-level keys) in the site-config
         foreach my $required_key (qw[
             source_dir
@@ -209,7 +221,6 @@ use Class::Std;
             ignore_dirs
             ignore_files
             tags
-            rsync
         ]) {
             if (not exists $site_config->{$required_key}) {
                 warn qq{** configuration option missing: $required_key\n};

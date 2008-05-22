@@ -3,6 +3,7 @@ This file documents the revision history for Zucchini
 0.0.6
     - only show missing digest warnings if we're verbose enough
     - only try to prepare remote FTP connection once
+    - better handling when trying to process a site that's not defined
 
 0.0.5   Fri May 16 09:10:57 BST 2008
     - fixed fsync transfer with non-root 'path'
