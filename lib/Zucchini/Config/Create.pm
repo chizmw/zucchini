@@ -67,7 +67,7 @@ Creates a new instance of the top-level Zucchini object:
 =head2 write_default_config
 
 Given a filename, write out the default/sample configuration file. If the file
-already exists it U<will not> be overwritten.
+already exists it I<will not> be overwritten.
 
   # write out a default config file
   $zucchini_cfg_create->write_default_config(
@@ -106,73 +106,63 @@ See <http://www.perl.com/perl/misc/Artistic.html>
 =cut
 
 __DATA__
-# which site configuration to use if none are specified on the command line
-default_site                'default'
 
-# site configurations
+default_site   default
+
 <site>
-    # default site configuration - simply an example of the format
+    # a default site
     <default>
-        source_dir          '/path/to/tt_templates'
-        includes_dir        '/path/to/tt_includes'
-        output_dir          '/var/www/default_site/html'
+        source_dir          /path/to/tt_templates
+        includes_dir        /path/to/tt_includes
+        output_dir          /var/www/default_site/html
 
-        template_files      '\.html\z'
+        template_files      \.html\z
 
-        ignore_dirs         'CVS'
-        ignore_dirs         '.svn'
-        ignore_dirs         'stats'
-        ignore_dirs         'tmp'
+        ignore_dirs         CVS
+        ignore_dirs         .svn
 
-        ignore_files        '\.swp\z'
+        ignore_files        \.swp\z
 
         <tags>
-            author          'Joe Bloggs'
-            email           'joe@localhost'
-            copyright       '&copy; 2000-2006 Joe Bloggs. All rights reserved.'
+            author          Joe Bloggs
+            email           joe@localhost
+            copyright       &copy; 2006-2008 Joe Bloggs. All rights reserved.
         </tags>
 
-        <rsync>
-            hostname        'remote.site'
-            path            '/home/joe.bloggs'
-        </rsync>
-
         <ftp>
-            hostname        'remote.ftp.site'
-            username        'joe.bloggs'
+            hostname        remote.ftp.site
+            username        joe.bloggs
+            password        sekrit
             passive         1
-            password        'sekrit'
-            path            '/htdocs/'
+            path            /
         </ftp>
     </default>
 
 
     # a second site definition - to demonstrate how to define multiple sites
-    <my-site>
-        source_dir          '/path/to/tt_templates'
-        includes_dir        '/path/to/tt_includes'
-        output_dir          '/var/www/default_site/html'
+    <mysite>
+        source_dir          /path/to/tt_templates
+        includes_dir        /path/to/tt_includes
+        output_dir          /var/www/default_site/html
 
         plugin_base         MyPrefix::Template::Plugin
 
-        template_files      '\.html\z'
+        template_files      \.html\z
 
-        ignore_dirs:        'CVS'
-        ignore_dirs:        '.svn'
-        ignore_dirs:        'stats'
-        ignore_dirs:        'tmp'
+        ignore_dirs         CVS
+        ignore_dirs         .svn
 
-        ignore_files:       '\.swp\z'
+        ignore_files        \.swp\z
 
         <tags>
-            author          'Joe Bloggs'
-            email           'joe@localhost'
-            copyright       '&copy; 2000-2006 Joe Bloggs. All rights reserved.'
-        <tags>
+            author          Joe Bloggs
+            email           joe@localhost
+            copyright       &copy; 2000-2006 Joe Bloggs. All rights reserved.
+        </tags>
 
         <rsync>
-            hostname        remote.ftp.site
+            hostname        remote.site
             path            /home/joe.bloggs
-        </rsync>
-    </my-site>
+         </rsync>
+    </mysite>
 </site>
