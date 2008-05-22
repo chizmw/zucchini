@@ -16,6 +16,7 @@ lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
 lib/Zucchini/Contributors.pm
 lib/Zucchini/Fsync.pm
+lib/Zucchini/Manual/Tutorial.pm
 lib/Zucchini/Rsync.pm
 lib/Zucchini/Template.pm
 lib/Zucchini/Version.pm
