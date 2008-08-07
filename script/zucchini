@@ -79,8 +79,12 @@ TODO
     --rsync         transfer generated site to server using rsync
     --rsync-only    transfer generated site to server using rsync
                     [do not regenerate site first]
-
     --dry-run       perform a dry-run of the rsync - do not transfer any files
+
+    --fsync         transfer generated site to server using fsync
+    --fsync-only    transfer generated site to server using fsync
+                    [do not regenerate site first]
+    --ftp-debug     show FTP debugging information
 
     --create-config write a new (sample) config file as ~/.zucchini
 

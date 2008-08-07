@@ -1,7 +1,8 @@
 This file documents the revision history for Zucchini
 
-0.0.7
+0.0.7   Tue Aug  5 20:10:56 BST 2008
     - added HTML error checking (HTML::Lint)
+    - added missing --options to script/zucchini POD usage
 
 0.0.6   Thu May 22 08:56:06 BST 2008
     - only show missing digest warnings if we're verbose enough
