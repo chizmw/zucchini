@@ -2,7 +2,7 @@
 # vim: ts=8 sts=4 et sw=4 sr sta
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 BEGIN {
     use FindBin;
@@ -39,6 +39,7 @@ $zucchini_rsync = Zucchini::Rsync->new(
     }
 );
 isa_ok($zucchini_rsync, q{Zucchini::Rsync});
+ok(defined($zucchini_rsync->get_config), q{object has configuration data});
 
 $zucchini_rsync->get_config->set_options(
     {
