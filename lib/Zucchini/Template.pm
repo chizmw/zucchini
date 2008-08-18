@@ -1,7 +1,6 @@
 package Zucchini::Template;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use strict;
-use warnings;
+use Moose; # automatically turns on strict and warnings
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -14,395 +13,391 @@ use Path::Class;
 use Template;
 
 # object attributes
-my %config_of   :ATTR( get => 'config',     set => 'config' );
-my %ttobject_of :ATTR( get => 'ttobject',   set => 'ttobject'   );
+has config => (
+    is      => 'ro',
+    reader  => 'get_config',
+    writer  => 'set_config',
+    isa     => 'Zucchini::Config',
+);
 
-use Class::Std;
-{
-    sub START {
-        my ($self, $obj_ID, $arg_ref) = @_;
+has ttobject => (
+    is      => 'ro',
+    reader  => 'get_ttobject',
+    writer  => 'set_ttobject',
+    isa     => 'Template',
+);
 
-        # store the Zucchini::Config object
-        $self->set_config(
-            $arg_ref->{config}
-        );
+sub process_site {
+    my $self = shift;
+    my $directory = $self->get_config->get_siteconfig->{source_dir};
 
-        return;
-    }
+    # start the directory descent ...
+    $self->process_directory( $directory );
 
-    sub process_site {
-        my $self = shift;
-        my $directory = $self->get_config->get_siteconfig->{source_dir};
+    return;
+}
 
-        # start the directory descent ...
-        $self->process_directory( $directory );
+sub process_directory {
+    my $self        = shift;
+    my $directory   = shift;
 
-        return;
-    }
+    # for easier access - we should probably objectify this better - TODO
+    my $config  = $self->get_config->get_siteconfig();
+    my $cliopt  = $self->get_config->get_options();
 
-    sub process_directory {
-        my $self        = shift;
-        my $directory   = shift;
+    # function variables
+    my (@list, $relpath);
 
-        # for easier access - we should probably objectify this better - TODO
-        my $config  = $self->get_config->get_siteconfig();
-        my $cliopt  = $self->get_config->get_options();
+    # get the list of stuff in the directory
+    @list = $self->directory_contents($directory);
+    # get our relative path from 'source_dir'
+    $relpath = $self->relative_path_from_full($directory);
 
-        # function variables
-        my (@list, $relpath);
-
-        # get the list of stuff in the directory
-        @list = $self->directory_contents($directory);
-        # get our relative path from 'source_dir'
-        $relpath = $self->relative_path_from_full($directory);
-
-        # loop through the items in the list and Do The Right Thing
-        foreach my $item (@list) {
-            # process individual files
-            if (-f file($directory,$item)) {
-                # skip ignored files
-                if ($self->ignore_file($item)) {
-                    next;
-                }
-
-                # getting this far means we should (try to) process the file
-                $self->process_file($directory, $item);
+    # loop through the items in the list and Do The Right Thing
+    foreach my $item (@list) {
+        # process individual files
+        if (-f file($directory,$item)) {
+            # skip ignored files
+            if ($self->ignore_file($item)) {
                 next;
             }
 
-            # process directories
-            elsif (-d file($directory,$item)) {
-                # skip ignored dirs
-                if ($self->ignore_directory($item)) {
-                    next;
-                }
-
-                my $outdir = dir($config->{output_dir}, $relpath, $item);
-                # make sure the directory exists in the output tree
-                if (! -d $outdir) {
-                    warn "output directory '$outdir' does not exist\n";
-                    if (not mkdir($outdir)) {
-                        carp "couldn't create output directory: $!";
-                        exit;
-                    }
-                    warn "created: $outdir\n";
-
-                }
-
-                # process the subdirectory
-                $self->process_directory(dir($directory,$item));
-                next;
-            }
-
-            # not a file or directory?
-            # we don't handle Odd Stuff (yet?)
-            else {
-                warn "unhandled file-type for '" . dir($directory,$item) . "\n";
-                next;
-            }
+            # getting this far means we should (try to) process the file
+            $self->process_file($directory, $item);
+            next;
         }
 
-        return;
+        # process directories
+        elsif (-d file($directory,$item)) {
+            # skip ignored dirs
+            if ($self->ignore_directory($item)) {
+                next;
+            }
+
+            my $outdir = dir($config->{output_dir}, $relpath, $item);
+            # make sure the directory exists in the output tree
+            if (! -d $outdir) {
+                warn "output directory '$outdir' does not exist\n";
+                if (not mkdir($outdir)) {
+                    carp "couldn't create output directory: $!";
+                    exit;
+                }
+                warn "created: $outdir\n";
+
+            }
+
+            # process the subdirectory
+            $self->process_directory(dir($directory,$item));
+            next;
+        }
+
+        # not a file or directory?
+        # we don't handle Odd Stuff (yet?)
+        else {
+            warn "unhandled file-type for '" . dir($directory,$item) . "\n";
+            next;
+        }
     }
 
-    sub directory_contents {
-        my $self        = shift;
-        my $directory   = shift;
-        my (@list);
+    return;
+}
 
-        # get a list of everything (except . and ..) in $directory
-        opendir(DIR, $directory)
-            or die("can't open '$directory': $!\n");
+sub directory_contents {
+    my $self        = shift;
+    my $directory   = shift;
+    my (@list);
 
-        @list = grep { $_ !~ /^\.\.?$/ } readdir(DIR);
+    # get a list of everything (except . and ..) in $directory
+    opendir(DIR, $directory)
+        or die("can't open '$directory': $!\n");
 
-        return @list;
+    @list = grep { $_ !~ /^\.\.?$/ } readdir(DIR);
+
+    return @list;
+}
+
+sub file_checksum {
+    my $self = shift;
+    my $file = shift;
+    my ($md5);
+
+    # try to open the file
+    open(FILE,$file) or do {
+        warn "Can't open $file: $!";
+        return undef;
+    };
+    binmode(FILE);
+
+    $md5 = Digest::MD5->new->addfile(*FILE)->hexdigest;
+
+    return $md5;
+}
+
+sub file_modified {
+    my $self = shift;
+    my ($template_file, $templated_file) = @_;
+    my ($template_stat, $templated_stat);
+
+    # if the destination file doesn't exist, it's "modified"
+    if (not -e $templated_file) {
+        return 1;
     }
 
-    sub file_checksum {
-        my $self = shift;
-        my $file = shift;
-        my ($md5);
+    # get stat info for each file
+    $template_stat  = stat( $template_file)   or die "no file: $!\n";
+    $templated_stat = stat($templated_file)   or die "no file: $!\n";
 
-        # try to open the file
-        open(FILE,$file) or do {
-            warn "Can't open $file: $!";
-            return undef;
-        };
-        binmode(FILE);
+    # return true if the templated file is OLDER than the template itself
+    # i.e. the source has been altered since we last generated the final result
+    return ($templated_stat->mtime < $template_stat->mtime);
+}
 
-        $md5 = Digest::MD5->new->addfile(*FILE)->hexdigest;
+sub ignore_directory {
+    my ($self, $directory) = @_;
 
-        return $md5;
-    }
+    foreach my $ignore_me (@{ $self->get_config->ignored_directories }) {
+        my $regex = qr/ \A $ignore_me \z /x;
 
-    sub file_modified {
-        my $self = shift;
-        my ($template_file, $templated_file) = @_;
-        my ($template_stat, $templated_stat);
-
-        # if the destination file doesn't exist, it's "modified"
-        if (not -e $templated_file) {
+        if ($directory =~ $regex) {
+            warn "ignoring directory '$directory'. Match on '$regex'.\n"
+                if ($self->get_config->verbose);
             return 1;
         }
-
-        # get stat info for each file
-        $template_stat  = stat( $template_file)   or die "no file: $!\n";
-        $templated_stat = stat($templated_file)   or die "no file: $!\n";
-
-        # return true if the templated file is OLDER than the template itself
-        # i.e. the source has been altered since we last generated the final result
-        return ($templated_stat->mtime < $template_stat->mtime);
     }
 
-    sub ignore_directory {
-        my ($self, $directory) = @_;
+    return;
+}
 
-        foreach my $ignore_me (@{ $self->get_config->ignored_directories }) {
-            my $regex = qr/ \A $ignore_me \z /x;
+sub ignore_file {
+    my ($self, $filename) = @_;
 
-            if ($directory =~ $regex) {
-                warn "ignoring directory '$directory'. Match on '$regex'.\n"
-                    if ($self->get_config->verbose);
-                return 1;
-            }
+    foreach my $ignore_me (@{ $self->get_config->ignored_files }) {
+        my $regex = qr/ $ignore_me /x;
+
+        if ($filename =~ $regex) {
+            warn "ignoring file '$filename'. Match on '$regex'.\n"
+                if ($self->get_config->verbose);
+            return 1;
         }
-
-        return;
     }
 
-    sub ignore_file {
-        my ($self, $filename) = @_;
+    return;
+}
 
-        foreach my $ignore_me (@{ $self->get_config->ignored_files }) {
-            my $regex = qr/ $ignore_me /x;
+sub item_name {
+    my $self = shift;
+    my ($directory, $item) = @_;
+    my ($filename);
 
-            if ($filename =~ $regex) {
-                warn "ignoring file '$filename'. Match on '$regex'.\n"
-                    if ($self->get_config->verbose);
-                return 1;
-            }
-        }
+    # TODO - objectify better
+    my $cliopt  = $self->get_config->get_options();
+    my $config  = $self->get_config->get_siteconfig();
 
-        return;
+    # default case - just the item name
+    $filename = $item;
+
+    # if we want to see the relative path
+    if ($cliopt->{showpath}) {
+        # get the full path to the file
+        $filename = file($directory,$item);
+        # remove path to sourcedir
+        $filename =~ s{\A$config->{source_dir}/?}{}xms;
     }
 
-    sub item_name {
-        my $self = shift;
-        my ($directory, $item) = @_;
-        my ($filename);
+    return $filename;
+}
 
-        # TODO - objectify better
-        my $cliopt  = $self->get_config->get_options();
-        my $config  = $self->get_config->get_siteconfig();
+sub process_file {
+    my $self        = shift;
+    my $directory   = shift;
+    my $item        = shift;
+    my ($relpath);
 
-        # default case - just the item name
-        $filename = $item;
+    # stuff we used to pass through in the script
+    # TODO objectify this
+    my $config  = $self->get_config->get_siteconfig();
+    my $cliopt  = $self->get_config->get_options();
 
-        # if we want to see the relative path
-        if ($cliopt->{showpath}) {
-            # get the full path to the file
-            $filename = file($directory,$item);
-            # remove path to sourcedir
-            $filename =~ s{\A$config->{source_dir}/?}{}xms;
+    # get the relative path
+    $relpath = $self->relative_path_from_full($directory);
+
+    # push the section name into the vars to replace
+    my $site_vars = {
+        source_dir  => $config->{source_dir},
+        %{ $config->{tags} }
+    };
+
+    # some files should be run through TT
+    if ($self->template_file($item)) {
+
+        # only create the template object once - it's stupid to create
+        # a new one for each file we template
+        if (not defined $self->get_ttobject) {
+            my $tt_config = {
+                ABSOLUTE        => 1,
+                EVAL_PERL       => 0,
+                INCLUDE_PATH    => "$config->{source_dir}:$config->{includes_dir}",
+            };
+            if (defined $config->{plugin_base}) {
+                $tt_config->{PLUGIN_BASE} = $config->{plugin_base};
+            }
+
+            $self->set_ttobject(
+                Template->new( $tt_config )
+            );
         }
 
-        return $filename;
-    }
-
-    sub process_file {
-        my $self        = shift;
-        my $directory   = shift;
-        my $item        = shift;
-        my ($relpath);
-
-        # stuff we used to pass through in the script
-        # TODO objectify this
-        my $config  = $self->get_config->get_siteconfig();
-        my $cliopt  = $self->get_config->get_options();
-
-        # get the relative path
-        $relpath = $self->relative_path_from_full($directory);
-
-        # push the section name into the vars to replace
-        my $site_vars = {
-            source_dir  => $config->{source_dir},
-            %{ $config->{tags} }
-        };
-
-        # some files should be run through TT
-        if ($self->template_file($item)) {
-
-            # only create the template object once - it's stupid to create
-            # a new one for each file we template
-            if (not defined $self->get_ttobject) {
-                my $tt_config = {
-                    ABSOLUTE        => 1,
-                    EVAL_PERL       => 0,
-                    INCLUDE_PATH    => "$config->{source_dir}:$config->{includes_dir}",
-                };
-                if (defined $config->{plugin_base}) {
-                    $tt_config->{PLUGIN_BASE} = $config->{plugin_base};
-                }
-
-                $self->set_ttobject(
-                    Template->new( $tt_config )
-                );
-            }
-
-            # if the template and the destination have the same timestamp, nothing's changed
-            # HOWEVER, we only care if we're not forcing the template-output to be regenerated
-            if (not $cliopt->{force}) {
-                if (not $self->file_modified(
-                        file($directory,$item),
-                        file($config->{output_dir},$relpath,$item)
-                    )
-                ) {
-                    warn "unchanged: " . $self->item_name($directory,$item) .  qq{\n}
-                        if ($self->get_config->verbose(2));
-                    return;
-                }
-            }
-
-            warn (q{templating: } . $self->item_name($directory, $item) . qq{\n});
-            $self->show_destination($directory, $item);
-
-            # ->process doesn't like Path::Class thingies being thrown at it
-            # so we force it to Stringify
-            $self->get_ttobject->process(
-                file($directory,$item) . q{},    
-                $site_vars,
-                file($config->{output_dir},$relpath,$item) . q{}
-            )
-                or Carp::croak ("\n" . $self->get_ttobject->error());
-
-            # if we're doing lint-checking
-            if ($self->get_config()->get_siteconfig()->{lint_check}) {
-                # check for HTML errors in file
-                if ($item =~ m{\.html?\z}) {
-                    # create a new HTML::Lint object
-                    my $lint = HTML::Lint->new();
-
-                    $lint->parse_file(
-                        file($config->{output_dir},$relpath,$item) . q{}
-                    );
-                    foreach my $error ( $lint->errors ) {
-                        # let the user know where and what the error is
-                        warn (
-                              q{!! }
-                            . $self->item_name($directory, $item)
-                            . q{: line }
-                            . $error->line
-                            . q{: }
-                            . $error->errtext
-                            . qq{\n}
-                        );
-                    }
-                }
-            }
-        }
-        # others should be copied (if they've changed
-        else {
-            # only copy files if the MD5 hasn't changed
-            if (not $self->same_file(
+        # if the template and the destination have the same timestamp, nothing's changed
+        # HOWEVER, we only care if we're not forcing the template-output to be regenerated
+        if (not $cliopt->{force}) {
+            if (not $self->file_modified(
                     file($directory,$item),
                     file($config->{output_dir},$relpath,$item)
                 )
             ) {
-                warn (q{Copying: } . $self->item_name($directory, $item) . qq{\n});
-                copy(
-                    file($directory,$item),
-                    file($config->{output_dir},$relpath,$item)
-                );
-                $self->show_destination($directory, $item);
+                warn "unchanged: " . $self->item_name($directory,$item) .  qq{\n}
+                    if ($self->get_config->verbose(2));
+                return;
             }
         }
 
-        return;
+        warn (q{templating: } . $self->item_name($directory, $item) . qq{\n});
+        $self->show_destination($directory, $item);
+
+        # ->process doesn't like Path::Class thingies being thrown at it
+        # so we force it to Stringify
+        $self->get_ttobject->process(
+            file($directory,$item) . q{},    
+            $site_vars,
+            file($config->{output_dir},$relpath,$item) . q{}
+        )
+            or Carp::croak ("\n" . $self->get_ttobject->error());
+
+        # if we're doing lint-checking
+        if ($self->get_config()->get_siteconfig()->{lint_check}) {
+            # check for HTML errors in file
+            if ($item =~ m{\.html?\z}) {
+                # create a new HTML::Lint object
+                my $lint = HTML::Lint->new();
+
+                $lint->parse_file(
+                    file($config->{output_dir},$relpath,$item) . q{}
+                );
+                foreach my $error ( $lint->errors ) {
+                    # let the user know where and what the error is
+                    warn (
+                            q{!! }
+                        . $self->item_name($directory, $item)
+                        . q{: line }
+                        . $error->line
+                        . q{: }
+                        . $error->errtext
+                        . qq{\n}
+                    );
+                }
+            }
+        }
+    }
+    # others should be copied (if they've changed
+    else {
+        # only copy files if the MD5 hasn't changed
+        if (not $self->same_file(
+                file($directory,$item),
+                file($config->{output_dir},$relpath,$item)
+            )
+        ) {
+            warn (q{Copying: } . $self->item_name($directory, $item) . qq{\n});
+            copy(
+                file($directory,$item),
+                file($config->{output_dir},$relpath,$item)
+            );
+            $self->show_destination($directory, $item);
+        }
     }
 
-    sub relative_path_from_full {
-        my $self        = shift;
-        my $directory   = shift;
-        my $config      = $self->get_config->get_siteconfig();
-        my ($relpath);
+    return;
+}
 
-        # get the relative path from the full srcdir path
-        $relpath = $directory;
-        # remove source_dir from directory path
-        $relpath =~ s:^$config->{source_dir}::;
-        # remove leading / (if any)
-        $relpath =~ s:^/::;     # fixme - assuming unix system
+sub relative_path_from_full {
+    my $self        = shift;
+    my $directory   = shift;
+    my $config      = $self->get_config->get_siteconfig();
+    my ($relpath);
 
-        return $relpath;
-    }
+    # get the relative path from the full srcdir path
+    $relpath = $directory;
+    # remove source_dir from directory path
+    $relpath =~ s:^$config->{source_dir}::;
+    # remove leading / (if any)
+    $relpath =~ s:^/::;     # fixme - assuming unix system
 
-    sub same_file {
-        my $self = shift;
-        my ($file1, $file2) = @_;
+    return $relpath;
+}
 
-        if (! -f $file2 or ! -f $file2) {
-            return 0;
-        }
+sub same_file {
+    my $self = shift;
+    my ($file1, $file2) = @_;
 
-        if ($self->file_checksum($file1) eq $self->file_checksum($file2)) {
-            return 1;
-        }
-
+    if (! -f $file2 or ! -f $file2) {
         return 0;
     }
 
-    sub show_destination {
-        my $self = shift;
-        my ($directory, $item) = @_;
-        my ($relpath);
-
-        # stuff we used to pass through in the script
-        # TODO objectify this
-        my $config  = $self->get_config->get_siteconfig();
-        my $cliopt  = $self->get_config->get_options();
-
-        # get the relative path for the directory
-        $relpath = $self->relative_path_from_full($directory);
-
-        if ($cliopt->{showdestination}) {
-            if ($relpath) {
-                warn(
-                      q{  --> }
-                    . file($config->{output_dir},$relpath,$item)
-                    . qq{\n}
-                );
-            }
-            # top-level files don't have a relpath and we'd prefer not to have
-            # '//' in the path
-            else {
-                warn(
-                      q{  --> }
-                    . file($config->{output_dir},$item)
-                    . qq{\n}
-                );
-            }
-        }
-
-        return;
+    if ($self->file_checksum($file1) eq $self->file_checksum($file2)) {
+        return 1;
     }
 
-    sub template_file {
-        my ($self,$filename) = @_;
-        my $config  = $self->get_config->get_siteconfig();
+    return 0;
+}
 
-        foreach my $ignore_me (@{ $self->get_config->templated_files }) {
-            my $regex = qr/ $ignore_me /x;
+sub show_destination {
+    my $self = shift;
+    my ($directory, $item) = @_;
+    my ($relpath);
 
-            if ($filename =~ $regex) {
-                return 1;
-            }
+    # stuff we used to pass through in the script
+    # TODO objectify this
+    my $config  = $self->get_config->get_siteconfig();
+    my $cliopt  = $self->get_config->get_options();
+
+    # get the relative path for the directory
+    $relpath = $self->relative_path_from_full($directory);
+
+    if ($cliopt->{showdestination}) {
+        if ($relpath) {
+            warn(
+                    q{  --> }
+                . file($config->{output_dir},$relpath,$item)
+                . qq{\n}
+            );
         }
-
-        return;
+        # top-level files don't have a relpath and we'd prefer not to have
+        # '//' in the path
+        else {
+            warn(
+                    q{  --> }
+                . file($config->{output_dir},$item)
+                . qq{\n}
+            );
+        }
     }
 
-};
+    return;
+}
+
+sub template_file {
+    my ($self,$filename) = @_;
+    my $config  = $self->get_config->get_siteconfig();
+
+    foreach my $ignore_me (@{ $self->get_config->templated_files }) {
+        my $regex = qr/ $ignore_me /x;
+
+        if ($filename =~ $regex) {
+            return 1;
+        }
+    }
+
+    return;
+}
 
 1;
 

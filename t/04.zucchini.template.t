@@ -5,7 +5,7 @@ use warnings;
 
 use File::Find;
 use Path::Class;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 BEGIN {
     use FindBin;
@@ -58,6 +58,7 @@ $zucchini_tpl = Zucchini::Template->new(
     }
 );
 isa_ok($zucchini_tpl, q{Zucchini::Template});
+ok(defined($zucchini_tpl->get_config), q{object has configuration data});
 
 # perform the magic
 $zucchini_tpl->process_site;
