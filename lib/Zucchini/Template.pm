@@ -14,14 +14,12 @@ use Template;
 
 # object attributes
 has config => (
-    is      => 'ro',
     reader  => 'get_config',
     writer  => 'set_config',
     isa     => 'Zucchini::Config',
 );
 
 has ttobject => (
-    is      => 'ro',
     reader  => 'get_ttobject',
     writer  => 'set_ttobject',
     isa     => 'Template',

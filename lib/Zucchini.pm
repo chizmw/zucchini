@@ -9,7 +9,6 @@ use Zucchini::Rsync;
 use Zucchini::Template;
 
 has config => (
-    is      => 'ro',
     reader  => 'get_config',
     writer  => 'set_config',
     isa     => 'Zucchini::Config',
