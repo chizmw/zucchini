@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 BEGIN {
     use_ok 'Zucchini';
@@ -40,3 +40,4 @@ $zucchini = Zucchini->new(
     }
 );
 isa_ok($zucchini, q{Zucchini});
+ok(defined($zucchini->get_config), q{object has configuration data});
