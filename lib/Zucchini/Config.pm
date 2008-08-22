@@ -27,246 +27,244 @@ has site => (
 );
 
 
-    #sub START {
-    sub BUILD {
-        my ($self, $arg_ref) = @_;
+sub BUILD {
+    my ($self, $arg_ref) = @_;
 
-        # if we've been asked to create a new config-file, do just that
-        # and exit
-        if ($arg_ref->{'create-config'}) {
-            my $zucchini_cfg_create = Zucchini::Config::Create->new();
+    # if we've been asked to create a new config-file, do just that
+    # and exit
+    if ($arg_ref->{'create-config'}) {
+        my $zucchini_cfg_create = Zucchini::Config::Create->new();
 
-            $zucchini_cfg_create->write_default_config(
-                file($ENV{HOME}, q{.zucchini})
-            );
-
-            exit;
-        }
-
-        # store the config/arg_ref for future reference
-        $self->set_options($arg_ref);
-
-        # we'll allow (clever) people to pass a hashref for the config
-        # (mostly useful for testing, but great for abuse too :) )
-        if (ref($arg_ref->{config_data})) {
-            $self->set_data( $arg_ref->{config_data} );
-        }
-        # load the config file - this is the preferred, default behaviour
-        else {
-            $self->_load_config();
-        }
-
-        # if we don't have a config file - abort
-        if (not defined $self->get_data) {
-            warn (
-                  file($ENV{HOME}, q{.zucchini})
-                . qq{: configuration file not found, use 'create-config' option to create one\n}
-            );
-            exit;
-        }
-
-        # deal with user options
-        if ($arg_ref->{site}) {
-            warn "using user-specified site label\n"
-                if ($self->verbose(2));
-            $self->set_site( delete $arg_ref->{site} );
-        }
-
-        # if we don't have a site specified, try to use a default
-        if (not defined $self->get_site()) {
-            warn "looking for default site\n"
-                if ($self->verbose(2));
-            # set the default site (if specified in config file)
-            if (defined (my $default = $self->get_data()->{default_site})) {
-                warn "using default site label\n"
-                    if ($self->verbose(2));
-                $self->set_site($default);
-            }
-            else {
-                warn "no default site specified\n";
-            }
-        }
-
-        # make sure out config is sane
-        if (not $self->_sane_config) {
-            warn "configuration file is not valid\n";
-            exit;
-        }
-
-        return;
-    }
-
-    sub get_siteconfig {
-        my $self = shift;
-        my ($site, $siteconfig);
-
-        # get the site
-        $site = $self->get_site;
-
-        # make sure it's defined
-        if (not defined $site) {
-            warn 
-                  q{'}
-                . $site
-                . q{' is not defined}
-                . qq{\n};
-            return;
-        }
-
-        # fetch the config block for the specified site
-        $siteconfig = $self->get_data()->{site}{$site};
-
-        return $siteconfig;
-    }
-
-    sub ignored_directories {
-        my $self = shift;
-
-        my $ignored = $self->get_siteconfig()->{ignore_dirs};
-
-        if (ref($ignored) eq q{ARRAY}) {
-            # do nothing - it's already a list-ref
-        }
-        else {
-            $ignored = [ $ignored ];
-        }
-
-        return $ignored;
-    }
-
-    sub ignored_files {
-        my $self = shift;
-
-        my $ignored = $self->get_siteconfig()->{ignore_files};
-
-        if (ref($ignored) eq q{ARRAY}) {
-            # do nothing - it's already a list-ref
-        }
-        else {
-            $ignored = [ $ignored ];
-        }
-
-        return $ignored;
-    }
-
-    sub is_dry_run {
-        my $self = shift;
-        return $self->get_options()->{'dry-run'};
-    }
-
-    sub is_fsync {
-        my $self = shift;
-        return $self->get_options()->{'fsync'};
-    }
-
-    sub is_fsync_only {
-        my $self = shift;
-        return $self->get_options()->{'fsync-only'};
-    }
-
-    sub is_rsync {
-        my $self = shift;
-        return $self->get_options()->{'rsync'};
-    }
-
-    sub is_rsync_only {
-        my $self = shift;
-        return $self->get_options()->{'rsync-only'};
-    }
-
-    sub templated_files {
-        my $self = shift;
-
-        my $templated = $self->get_siteconfig()->{template_files};
-
-        if (ref($templated) eq q{ARRAY}) {
-            # do nothing - it's already a list-ref
-        }
-        else {
-            $templated = [ $templated ];
-        }
-
-        return $templated;
-    }
-
-    sub verbose {
-        my $self    = shift;
-        my $level   = shift || 1;
-        return (($self->get_options()->{'verbose'}||0) >= $level);
-    }
-
-    sub _load_config {
-        my $self    = shift;
-
-        my $config_file = file($ENV{HOME}, q{/.zucchini});
-
-        # read/load/parse the config file
-        my $cfg = Config::Any->load_files(
-            {
-                files   => [ $config_file ],
-                use_ext => 0,
-            }
+        $zucchini_cfg_create->write_default_config(
+            file($ENV{HOME}, q{.zucchini})
         );
 
-        for (@$cfg) {
-            my ($filename, $config) = each %$_;
-            # store the config data (to be fetched later with ->get_data()
-            $self->set_data($config);
-            warn "loaded config from file: $filename" if (0);
-        }
+        exit;
+    }
 
-        if (not defined $self->get_data()) {
-            warn "$config_file: no configuration data loaded\n"
-                if ($self->verbose);
-            return;
-        }
+    # store the config/arg_ref for future reference
+    $self->set_options($arg_ref);
 
+    # we'll allow (clever) people to pass a hashref for the config
+    # (mostly useful for testing, but great for abuse too :) )
+    if (ref($arg_ref->{config_data})) {
+        $self->set_data( $arg_ref->{config_data} );
+    }
+    # load the config file - this is the preferred, default behaviour
+    else {
+        $self->_load_config();
+    }
+
+    # if we don't have a config file - abort
+    if (not defined $self->get_data) {
+        warn (
+                file($ENV{HOME}, q{.zucchini})
+            . qq{: configuration file not found, use 'create-config' option to create one\n}
+        );
+        exit;
+    }
+
+    # deal with user options
+    if ($arg_ref->{site}) {
+        warn "using user-specified site label\n"
+            if ($self->verbose(2));
+        $self->set_site( delete $arg_ref->{site} );
+    }
+
+    # if we don't have a site specified, try to use a default
+    if (not defined $self->get_site()) {
+        warn "looking for default site\n"
+            if ($self->verbose(2));
+        # set the default site (if specified in config file)
+        if (defined (my $default = $self->get_data()->{default_site})) {
+            warn "using default site label\n"
+                if ($self->verbose(2));
+            $self->set_site($default);
+        }
+        else {
+            warn "no default site specified\n";
+        }
+    }
+
+    # make sure out config is sane
+    if (not $self->_sane_config) {
+        warn "configuration file is not valid\n";
+        exit;
+    }
+
+    return;
+}
+
+sub get_siteconfig {
+    my $self = shift;
+    my ($site, $siteconfig);
+
+    # get the site
+    $site = $self->get_site;
+
+    # make sure it's defined
+    if (not defined $site) {
+        warn 
+                q{'}
+            . $site
+            . q{' is not defined}
+            . qq{\n};
         return;
     }
 
-    sub _sane_config {
-        my $self    = shift;
-        my $errors  = 0;
+    # fetch the config block for the specified site
+    $siteconfig = $self->get_data()->{site}{$site};
 
-        my $site_config = $self->get_siteconfig();
+    return $siteconfig;
+}
 
-        if (not defined $site_config) {
-            warn "site-specific configuration block is missing\n";
-            return;
-        }
+sub ignored_directories {
+    my $self = shift;
 
-        # these entries should all exist (as top-level keys) in the site-config
-        foreach my $required_key (qw[
-            source_dir
-            includes_dir
-            output_dir
-            template_files
-            ignore_dirs
-            ignore_files
-            tags
-        ]) {
-            if (not exists $site_config->{$required_key}) {
-                warn qq{** configuration option missing: $required_key\n};
-                $errors++;
-            }
-        }
+    my $ignored = $self->get_siteconfig()->{ignore_dirs};
 
-        # these directories should exist
-        foreach my $required_dir (qw[source_dir includes_dir output_dir]) {
-            # dir should exist
-            if (
-                exists $site_config->{$required_dir}
-                    and
-                not -d $site_config->{$required_dir}
-            ) {
-                warn qq{** directory missing: $site_config->{$required_dir}\n};
-                $errors++;
-            }
-        }
-
-        return (not $errors);
+    if (ref($ignored) eq q{ARRAY}) {
+        # do nothing - it's already a list-ref
     }
-#}
+    else {
+        $ignored = [ $ignored ];
+    }
+
+    return $ignored;
+}
+
+sub ignored_files {
+    my $self = shift;
+
+    my $ignored = $self->get_siteconfig()->{ignore_files};
+
+    if (ref($ignored) eq q{ARRAY}) {
+        # do nothing - it's already a list-ref
+    }
+    else {
+        $ignored = [ $ignored ];
+    }
+
+    return $ignored;
+}
+
+sub is_dry_run {
+    my $self = shift;
+    return $self->get_options()->{'dry-run'};
+}
+
+sub is_fsync {
+    my $self = shift;
+    return $self->get_options()->{'fsync'};
+}
+
+sub is_fsync_only {
+    my $self = shift;
+    return $self->get_options()->{'fsync-only'};
+}
+
+sub is_rsync {
+    my $self = shift;
+    return $self->get_options()->{'rsync'};
+}
+
+sub is_rsync_only {
+    my $self = shift;
+    return $self->get_options()->{'rsync-only'};
+}
+
+sub templated_files {
+    my $self = shift;
+
+    my $templated = $self->get_siteconfig()->{template_files};
+
+    if (ref($templated) eq q{ARRAY}) {
+        # do nothing - it's already a list-ref
+    }
+    else {
+        $templated = [ $templated ];
+    }
+
+    return $templated;
+}
+
+sub verbose {
+    my $self    = shift;
+    my $level   = shift || 1;
+    return (($self->get_options()->{'verbose'}||0) >= $level);
+}
+
+sub _load_config {
+    my $self    = shift;
+
+    my $config_file = file($ENV{HOME}, q{/.zucchini});
+
+    # read/load/parse the config file
+    my $cfg = Config::Any->load_files(
+        {
+            files   => [ $config_file ],
+            use_ext => 0,
+        }
+    );
+
+    for (@$cfg) {
+        my ($filename, $config) = each %$_;
+        # store the config data (to be fetched later with ->get_data()
+        $self->set_data($config);
+        warn "loaded config from file: $filename" if (0);
+    }
+
+    if (not defined $self->get_data()) {
+        warn "$config_file: no configuration data loaded\n"
+            if ($self->verbose);
+        return;
+    }
+
+    return;
+}
+
+sub _sane_config {
+    my $self    = shift;
+    my $errors  = 0;
+
+    my $site_config = $self->get_siteconfig();
+
+    if (not defined $site_config) {
+        warn "site-specific configuration block is missing\n";
+        return;
+    }
+
+    # these entries should all exist (as top-level keys) in the site-config
+    foreach my $required_key (qw[
+        source_dir
+        includes_dir
+        output_dir
+        template_files
+        ignore_dirs
+        ignore_files
+        tags
+    ]) {
+        if (not exists $site_config->{$required_key}) {
+            warn qq{** configuration option missing: $required_key\n};
+            $errors++;
+        }
+    }
+
+    # these directories should exist
+    foreach my $required_dir (qw[source_dir includes_dir output_dir]) {
+        # dir should exist
+        if (
+            exists $site_config->{$required_dir}
+                and
+            not -d $site_config->{$required_dir}
+        ) {
+            warn qq{** directory missing: $site_config->{$required_dir}\n};
+            $errors++;
+        }
+    }
+
+    return (not $errors);
+}
 
 1;
 
