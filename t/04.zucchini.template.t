@@ -11,6 +11,7 @@ BEGIN {
     use FindBin;
     use lib qq{$FindBin::Bin/testlib};
     use Zucchini::TestConfig;
+    use Zucchini::Test;
 }
 
 BEGIN {
@@ -63,53 +64,5 @@ ok(defined($zucchini_tpl->get_config), q{object has configuration data});
 # perform the magic
 $zucchini_tpl->process_site;
 
-PROCESS_WORKED: {
-
-    sub add_to_tree_list {
-        my $file    = shift;
-        my $dir     = shift;
-        my $root    = shift;
-        my $listref = shift;
-
-        $dir =~ s{\A${root}}{};
-        push @{$listref}, file($dir, $file);
-        #warn "Found: " . file($dir, $file);
-    }
-
-    # get a list of files in the input dir
-    find(
-        {
-            wanted => sub {
-                -r && do {
-                    add_to_tree_list(
-                        $_,
-                        $File::Find::dir,
-                        $zucchini_tpl->get_config->get_siteconfig->{source_dir},
-                        \@input_tree
-                    );
-                };
-            },
-        },
-        $zucchini_tpl->get_config->get_siteconfig->{source_dir},
-    );
-    # get a list of files in the output dir
-    find(
-        {
-            wanted => sub {
-                -r && do {
-                    add_to_tree_list(
-                        $_,
-                        $File::Find::dir,
-                        $zucchini_tpl->get_config->get_siteconfig->{output_dir},
-                        \@output_tree
-                    );
-                };
-            },
-        },
-        $zucchini_tpl->get_config->get_siteconfig->{output_dir},
-    );
-
-    # we should have the same files in the template directory
-    # and the output directory
-    is_deeply(\@input_tree, \@output_tree);
-}
+# make sure we get "what we expect" in the output directory
+Zucchini::Test::compare_input_output($zucchini_tpl->get_config);

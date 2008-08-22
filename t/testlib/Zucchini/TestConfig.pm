@@ -44,7 +44,6 @@ has config => (
 );
 
 sub BUILD {
-    #my ( $self, $obj_ID, $arg_ref ) = @_;
     my ( $self, $arg_ref ) = @_;
     my ( $zcfg );
 
@@ -88,9 +87,9 @@ sub site_config {
         site => {
             'testdata' => {
                 ignore_dirs     => ["CVS", ".svn", "tmp"],
-                ignore_files    => "\\.swp\\z",
+                ignore_files    => ["\\.swp\\z"],
                 includes_dir    => "XXWILLBEOVERRIDDENXX",
-                output_dir => "XXWILLBEOVERRIDDENXX",
+                output_dir      => "XXWILLBEOVERRIDDENXX",
                 source_dir      => "XXWILLBEOVERRIDDENXX",
                 template_files  => "\\.html\\z",
                 website         => "http://www.chizography.net/",
@@ -125,7 +124,7 @@ sub site_config {
                 output_dir      => 'XXWILLBEOVERRIDDENXX',
                 template_files  => "\\.html\\z",
                 ignore_dirs     => ["CVS", ".svn", "tmp"],
-                ignore_files    => "\\.swp\\z",
+                ignore_files    => ["\\.swp\\z"],
                 tags => {
                     author      => "Chisel Wright",
                     copyright   => "&copy; 2006-2008 Chisel Wright. All rights reserved.",
