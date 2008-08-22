@@ -24,6 +24,7 @@ requires(
     'File::Temp'                    => 0, # core since 5.006001
     'HTML::Lint'                    => '2.02',
     'IO::File'                      => 0, # core since 5.00307
+    'Moose'                         => '0.55',
     'Net::FTP'                      => '2.77',
     'Path::Class'                   => '0.16',
     'Template'                      => '2.19',
@@ -34,6 +35,7 @@ requires(
 build_requires(
     'File::Find'                    => 0, # core with perl5
     'File::Temp'                    => '0.18',
+    'Test::File::Contents'          => '0.05',
     'Test::More'                    => '0.72',
 );
 

@@ -1,7 +1,6 @@
 package Zucchini;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use strict;
-use warnings;
+use Moose; # automatically turns on strict and warnings
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 use Zucchini::Config;
@@ -9,116 +8,117 @@ use Zucchini::Fsync;
 use Zucchini::Rsync;
 use Zucchini::Template;
 
-# object attributes
-my %config_of :ATTR( get => 'config', set => 'config' );
+has config => (
+    reader  => 'get_config',
+    writer  => 'set_config',
+    isa     => 'Zucchini::Config',
+);
 
-use Class::Std;
-{
-    sub BUILD {
-        my ($self, $obj_ID, $arg_ref) = @_;
+sub BUILD {
+    my ($self, $arg_ref) = @_;
 
-        # set our config to be a new Zucchini::Config object
-        # instantiated with the arguments passed to ourself
-        $self->set_config(
-            Zucchini::Config->new(
-                $arg_ref
-            )
-        );
+    # set our config to be a new Zucchini::Config object
+    # instantiated with the arguments passed to ourself
+    $self->set_config(
+        Zucchini::Config->new(
+            $arg_ref
+        )
+    );
 
-        return;
-    }
+    return;
+}
 
-    sub gogogo {
-        my $self = shift;
+sub gogogo {
+    my $self = shift;
 
-        # if we're not rsync-only or fsync-only, we should perform the
-        # template processing
-        if (
-            not (
-                $self->get_config->is_rsync_only()
-                    or 
-                $self->get_config->is_fsync_only()
-            )
-        ) {
-            $self->process_templates;
-        }
-        # let verbose people know we're *NOT* processing any templates
-        else {
-            if ($self->get_config->verbose) {
-                warn "Skipping template processing phase\n";
-            }
-        }
-
-
-        # was a remote-sync requested?
-        if (
-            $self->get_config->is_rsync()
-                or 
+    # if we're not rsync-only or fsync-only, we should perform the
+    # template processing
+    if (
+        not (
             $self->get_config->is_rsync_only()
-        ) {
-            $self->remote_sync;
-        }
-
-        # was an ftp-sync requested?
-        if (
-            $self->get_config->is_fsync()
                 or 
             $self->get_config->is_fsync_only()
-        ) {
-            $self->ftp_sync;
+        )
+    ) {
+        $self->process_templates;
+    }
+    # let verbose people know we're *NOT* processing any templates
+    else {
+        if ($self->get_config->verbose) {
+            warn "Skipping template processing phase\n";
         }
     }
 
-    sub process_templates {
-        my $self = shift;
-        my ($templater);
 
-        # create a new templater object
-        $templater = Zucchini::Template->new(
-            {
-                config => $self->get_config,
-            }
-        );
-        # process the site
-        $templater->process_site;
-
-        return;
+    # was a remote-sync requested?
+    if (
+        $self->get_config->is_rsync()
+            or 
+        $self->get_config->is_rsync_only()
+    ) {
+        $self->remote_sync;
     }
 
-    sub ftp_sync {
-        my $self = shift;
-        my ($fsyncer);
-
-        # create a new fsync object
-        $fsyncer = Zucchini::Fsync->new(
-            {
-                config => $self->get_config,
-            }
-        );
-        # transfer the site
-        $fsyncer->ftp_sync;
-
-        return;
+    # was an ftp-sync requested?
+    if (
+        $self->get_config->is_fsync()
+            or 
+        $self->get_config->is_fsync_only()
+    ) {
+        $self->ftp_sync;
     }
+}
 
-    sub remote_sync {
-        my $self = shift;
-        my ($rsyncer);
+sub process_templates {
+    my $self = shift;
+    my ($templater);
 
-        # create a new rsync object
-        $rsyncer = Zucchini::Rsync->new(
-            {
-                config => $self->get_config,
-            }
-        );
-        # transfer the site
-        $rsyncer->remote_sync;
+    # create a new templater object
+    $templater = Zucchini::Template->new(
+        {
+            config => $self->get_config,
+        }
+    );
+    # process the site
+    $templater->process_site;
 
-        return;
-    }
-};
+    return;
+}
 
-1;
+sub ftp_sync {
+    my $self = shift;
+    my ($fsyncer);
+
+    # create a new fsync object
+    $fsyncer = Zucchini::Fsync->new(
+        {
+            config => $self->get_config,
+        }
+    );
+    # transfer the site
+    $fsyncer->ftp_sync;
+
+    return;
+}
+
+sub remote_sync {
+    my $self = shift;
+    my ($rsyncer);
+
+    # create a new rsync object
+    $rsyncer = Zucchini::Rsync->new(
+        {
+            config => $self->get_config,
+        }
+    );
+    # transfer the site
+    $rsyncer->remote_sync;
+
+    return;
+}
+
+# true value at tail end of module'
+q{This truth was inspired by YAPC::Europe::2008};
 
 __END__
 

@@ -1,7 +1,6 @@
 package Zucchini::Rsync;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use strict;
-use warnings;
+use Moose; # automatically turns on strict and warnings
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -10,81 +9,71 @@ use Config::Any;
 use File::Rsync;
 
 # class data
-my %config_of   :ATTR( get => 'config',     set => 'config' );
+has config => (
+    reader  => 'get_config',
+    writer  => 'set_config',
+    isa     => 'Zucchini::Config',
+);
 
-use Class::Std;
-{
-    sub START {
-        my ($self, $obj_ID, $arg_ref) = @_;
+sub remote_sync {
+    my $self = shift;
 
-        # store the Zucchini::Config object
-        $self->set_config(
-            $arg_ref->{config}
-        );
+    my $config      = $self->get_config->get_siteconfig();
+    my $local_dir   = $config->{output_dir};
+    my $rsync_data  = $config->{rsync};
 
-        return;
-    }
-
-    sub remote_sync {
-        my $self = shift;
-
-        my $config      = $self->get_config->get_siteconfig();
-        my $local_dir   = $config->{output_dir};
-        my $rsync_data  = $config->{rsync};
-
-        # we need a remote host and a path
-        foreach my $required (qw[ hostname path ]) {
-            if (not exists $rsync_data->{$required}) {
-                warn "missing rsync option '$required'. rsync aborted\n";
-                return;
-            }
-        }
-
-        # create a new rsync object
-        my $syncer = File::Rsync->new(
-            {
-                recursive       => 1,
-                compress        => 1,
-                verbose         => $self->get_config->verbose(2),
-                'dry-run'       => $self->get_config->is_dry_run() || 0,
-            }
-        );
-
-        # make sure it was successfully created
-        if (not defined $syncer) {
-            warn "Can't create File::Rsync object\n";
+    # we need a remote host and a path
+    foreach my $required (qw[ hostname path ]) {
+        if (not exists $rsync_data->{$required}) {
+            warn "missing rsync option '$required'. rsync aborted\n";
             return;
         }
+    }
 
-        # perform the rsync operation
-        if ($self->get_config->verbose) {
-            if ($self->get_config->is_dry_run()) {
-                warn "Running rsync in dryrun mode\n";
-            }
-            warn "Starting rsync\n";
+    # create a new rsync object
+    my $syncer = File::Rsync->new(
+        {
+            recursive       => 1,
+            compress        => 1,
+            verbose         => $self->get_config->verbose(2),
+            'dry-run'       => $self->get_config->is_dry_run() || 0,
         }
-        $syncer->exec(
-            {
-                src     => "$local_dir/",
-                dest    => "$rsync_data->{hostname}:$rsync_data->{path}/",
-            }
-        );
+    );
 
-        # give feedback if we're verbose
-        if ($self->get_config->verbose(2)) {
-            warn $syncer->out();
-        }
-        if ($self->get_config->verbose) {
-            warn "Completed rsync\n";
-        }
-
-        # give feedback if there were any errors
-        if ($syncer->err()) {
-            warn $syncer->err();
-        }
-
+    # make sure it was successfully created
+    if (not defined $syncer) {
+        warn "Can't create File::Rsync object\n";
         return;
     }
+
+    # perform the rsync operation
+    if ($self->get_config->verbose) {
+        if ($self->get_config->is_dry_run()) {
+            warn "Running rsync in dryrun mode\n";
+        }
+        warn "Starting rsync\n";
+    }
+    $syncer->exec(
+        {
+            src     => "$local_dir/",
+            dest    => "$rsync_data->{hostname}:$rsync_data->{path}/",
+        }
+    );
+
+    # give feedback if we're verbose
+    if ($self->get_config->verbose(2)) {
+        warn $syncer->out();
+    }
+    if ($self->get_config->verbose) {
+        warn "Completed rsync\n";
+    }
+
+    # give feedback if there were any errors
+    if ($syncer->err()) {
+        warn $syncer->err();
+    }
+
+    return;
 }
 
 1;
