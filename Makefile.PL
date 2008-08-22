@@ -35,6 +35,7 @@ requires(
 build_requires(
     'File::Find'                    => 0, # core with perl5
     'File::Temp'                    => '0.18',
+    'Test::File::Contents'          => '0.05',
     'Test::More'                    => '0.72',
 );
 
