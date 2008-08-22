@@ -3,6 +3,7 @@ package Zucchini::TestConfig;
 use Moose; # automatically turns on strict and warnings
 
 use FindBin;
+use Path::Class;
 use File::Temp qw(tempdir);
 use Zucchini::Config;
 
@@ -15,12 +16,12 @@ has testdir => (
 has templatedir => (
     reader  => 'get_templatedir',
     writer  => 'set_templatedir',
-    isa     => 'Str',
+    isa     => 'Path::Class::Dir',
 );
 has includedir => (
     reader  => 'get_includedir',
     writer  => 'set_includedir',
-    isa     => 'Str',
+    isa     => 'Path::Class::Dir',
 );
 has outputdir => (
     reader  => 'get_outputdir',
@@ -49,13 +50,19 @@ sub BUILD {
 
     # work out the template dir
     $self->set_templatedir(
-          $FindBin::Bin
-        . q{/testdata/templates}
+        dir(
+            $FindBin::Bin,
+            'testdata',
+            'templates'
+        )
     );
     # work out the include dir
     $self->set_includedir(
-          $FindBin::Bin
-        . q{/testdata/includes}
+        dir(
+            $FindBin::Bin,
+            'testdata',
+            'includes'
+        )
     );
 
     # set a temporary directory for templating output
