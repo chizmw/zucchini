@@ -38,6 +38,7 @@ t/06.zucchini.fsync.t
 t/10.site.t
 t/testdata/includes/footer.tt
 t/testdata/includes/header.tt
+t/testdata/templates/_should_be_ignored_.swp
 t/testdata/templates/author.html
 t/testdata/templates/copyright.html
 t/testdata/templates/email.html

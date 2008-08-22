@@ -1,5 +1,8 @@
 This file documents the revision history for Zucchini
 
+0.0.9   Fri Aug 22 19:26:30 BST 2008
+    - added missing t/testdata file
+
 0.0.8   Fri Aug 22 19:16:30 BST 2008
     - converted from Class:Std to Moose base objects
     - extended/improved test suite
