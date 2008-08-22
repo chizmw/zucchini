@@ -1,6 +1,6 @@
 This file documents the revision history for Zucchini
 
-0.0.8
+0.0.8   Fri Aug 22 19:16:30 BST 2008
     - converted from Class:Std to Moose base objects
     - extended/improved test suite
     - refactored common test code into ::Test module
