@@ -1,7 +1,6 @@
 package Zucchini::Config;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use strict;
-use warnings;
+use Moose; # automatically turns on strict and warnings
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -10,15 +9,28 @@ use Config::Any;
 use Path::Class;
 use Zucchini::Config::Create;
 
-# no set method - we don't want any outside inteference
-my %data_of         :ATTR( get => 'data'                            );
-my %options_of      :ATTR( get => 'options',    set => 'options'    );
-my %site_of         :ATTR( get => 'site',       set => 'site',      );
+# object attributes
+# object attributes
+has data => (
+    reader  => 'get_data',
+    writer  => 'set_data',
+    isa     => 'HashRef',
+);
+has options => (
+    reader  => 'get_options',
+    writer  => 'set_options',
+    isa     => 'HashRef',
+);
+has site => (
+    reader  => 'get_site',
+    writer  => 'set_site',
+    isa     => 'Str',
+);
 
-use Class::Std;
-{
-    sub START {
-        my ($self, $obj_ID, $arg_ref) = @_;
+
+    #sub START {
+    sub BUILD {
+        my ($self, $arg_ref) = @_;
 
         # if we've been asked to create a new config-file, do just that
         # and exit
@@ -33,16 +45,16 @@ use Class::Std;
         }
 
         # store the config/arg_ref for future reference
-        $options_of{$obj_ID} = $arg_ref;
+        $self->set_options($arg_ref);
 
         # we'll allow (clever) people to pass a hashref for the config
         # (mostly useful for testing, but great for abuse too :) )
         if (ref($arg_ref->{config_data})) {
-            $data_of{$obj_ID} = $arg_ref->{config_data};
+            $self->set_data( $arg_ref->{config_data} );
         }
         # load the config file - this is the preferred, default behaviour
         else {
-            $self->_load_config($obj_ID);
+            $self->_load_config();
         }
 
         # if we don't have a config file - abort
@@ -186,7 +198,6 @@ use Class::Std;
 
     sub _load_config {
         my $self    = shift;
-        my $obj_ID  = shift;
 
         my $config_file = file($ENV{HOME}, q{/.zucchini});
 
@@ -201,7 +212,7 @@ use Class::Std;
         for (@$cfg) {
             my ($filename, $config) = each %$_;
             # store the config data (to be fetched later with ->get_data()
-            $data_of{$obj_ID} = $config;
+            $self->set_data($config);
             warn "loaded config from file: $filename" if (0);
         }
 
@@ -256,7 +267,7 @@ use Class::Std;
 
         return (not $errors);
     }
-}
+#}
 
 1;
 

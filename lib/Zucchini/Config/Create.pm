@@ -1,36 +1,32 @@
 package Zucchini::Config::Create;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use strict;
-use warnings;
+use Moose; # automatically turns on strict and warnings
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
 use IO::File;
 
-use Class::Std;
-{
-    sub write_default_config {
-        my $self        = shift;
-        my $filename    = shift;
+sub write_default_config {
+    my $self        = shift;
+    my $filename    = shift;
 
-        if (-e $filename) {
-            # TODO - copy file to file.TIMESTAMP and create new
-            warn "$filename already exists\n";
-            return;
-        }
-
-        # create a filehandle to write to
-        my $fh = IO::File->new($filename, 'w');
-
-        # loop through the __DATA__ for this module
-        # and print it to the filehandle
-        while (my $line = <DATA>) {
-            print $fh <DATA>;
-        }
-        $fh->close;
-        close DATA;
+    if (-e $filename) {
+        # TODO - copy file to file.TIMESTAMP and create new
+        warn "$filename already exists\n";
+        return;
     }
-};
+
+    # create a filehandle to write to
+    my $fh = IO::File->new($filename, 'w');
+
+    # loop through the __DATA__ for this module
+    # and print it to the filehandle
+    while (my $line = <DATA>) {
+        print $fh <DATA>;
+    }
+    $fh->close;
+    close DATA;
+}
 
 1;
 
