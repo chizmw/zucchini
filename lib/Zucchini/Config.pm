@@ -10,7 +10,6 @@ use Path::Class;
 use Zucchini::Config::Create;
 
 # object attributes
-# object attributes
 has data => (
     reader  => 'get_data',
     writer  => 'set_data',
