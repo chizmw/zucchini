@@ -71,7 +71,7 @@ sub compare_input_output {
 
     # we should have the same files in the template directory
     # and the output directory
-    is_deeply(\@input_tree, \@output_tree);
+    is_deeply(\@input_tree, \@output_tree, q{correct files in output directory});
 }
 
 1; # just be true
