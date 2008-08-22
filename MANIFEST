@@ -38,8 +38,13 @@ t/06.zucchini.fsync.t
 t/10.site.t
 t/testdata/includes/footer.tt
 t/testdata/includes/header.tt
+t/testdata/templates/author.html
+t/testdata/templates/copyright.html
+t/testdata/templates/email.html
 t/testdata/templates/index.html
+t/testdata/templates/subdir1/abby.jpg
 t/testdata/templates/subdir1/index.html
+t/testdata/templates/subdir1/tags.html
 t/testlib/Zucchini/Test.pm
 t/testlib/Zucchini/TestConfig.pm
 TODO
