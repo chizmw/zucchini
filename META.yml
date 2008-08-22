@@ -1,16 +1,29 @@
----
-name: Zucchini
-version: 0.0.3
-author:
-  - 'Chisel Wright<chiselwright@users.berlios.de>'
+--- 
 abstract: turn templates into static websites
+author: 
+  - Chisel Wright<chiselwright@users.berlios.de>
+build_requires: 
+  File::Find: 0
+  File::Temp: 0.18
+  Test::More: 0.72
+distribution_type: module
+generated_by: Module::Install version 0.68
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
+meta-spec: 
+  url: http://module-build.sourceforge.net/META-spec-v1.3.html
+  version: 1.3
+name: Zucchini
+no_index: 
+  directory: 
+    - legacy
+    - inc
+    - t
+recommends: 
+  Config::General: 2.37
+requires: 
   Carp: 0
   Class::Std: 0.0.8
-  Config::Any: 0.08
+  Config::Any: 0.09
   Digest::MD5: 2.36
   File::Basename: 0
   File::Copy: 2.09
@@ -19,21 +32,10 @@ requires:
   File::Slurp: 9999.12
   File::Temp: 0
   File::stat: 1.00
+  HTML::Lint: 2.02
   IO::File: 0
   Net::FTP: 2.77
   Path::Class: 0.16
   Template: 2.19
   version: 0
-build_requires:
-  File::Find: 0
-  File::Temp: 0.18
-  Test::More: 0.72
-recommends:
-  Config::General: 2.37
-no_index:
-  directory:
-    - legacy
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+version: 0.0.8
