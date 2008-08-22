@@ -24,6 +24,7 @@ requires(
     'File::Temp'                    => 0, # core since 5.006001
     'HTML::Lint'                    => '2.02',
     'IO::File'                      => 0, # core since 5.00307
+    'Moose'                         => '0.55',
     'Net::FTP'                      => '2.77',
     'Path::Class'                   => '0.16',
     'Template'                      => '2.19',
