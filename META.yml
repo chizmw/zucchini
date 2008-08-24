@@ -7,6 +7,7 @@ build_requires:
   File::Temp: 0.18
   Test::File::Contents: 0.05
   Test::More: 0.72
+  Test::NoWarnings: 0.083
 distribution_type: module
 generated_by: Module::Install version 0.68
 license: perl
@@ -40,4 +41,4 @@ requires:
   Path::Class: 0.16
   Template: 2.19
   version: 0
-version: 0.0.9
+version: 0.0.10

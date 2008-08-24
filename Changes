@@ -1,5 +1,8 @@
 This file documents the revision history for Zucchini
 
+0.0.10  Sun Aug 24 20:30:54 BST 2008
+    - added missing build dependency to Makefile.PL
+
 0.0.9   Fri Aug 22 19:26:30 BST 2008
     - added missing t/testdata file
 

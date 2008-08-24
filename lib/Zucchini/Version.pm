@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # from mst on #catalyst
-use version; our $VERSION = qv(0.0.9)->numify;
+use version; our $VERSION = qv(0.0.10)->numify;
 
 package Zucchini::Version;
 

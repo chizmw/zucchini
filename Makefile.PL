@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 # Define metadata
 name            'Zucchini';
-version         '0.0.9';
+version         '0.0.10';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
 license         'perl';
 abstract        'turn templates into static websites';
@@ -37,6 +37,7 @@ build_requires(
     'File::Temp'                    => '0.18',
     'Test::File::Contents'          => '0.05',
     'Test::More'                    => '0.72',
+    'Test::NoWarnings'              => '0.083',
 );
 
 # recommended modules for the script to "be the best"
