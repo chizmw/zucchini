@@ -1,5 +1,9 @@
 This file documents the revision history for Zucchini
 
+0.0.11
+    - removed Class::Std dependency
+    - added "use warnings" to tutorial POD file
+
 0.0.10  Sun Aug 24 20:30:54 BST 2008
     - added missing build dependency to Makefile.PL
 

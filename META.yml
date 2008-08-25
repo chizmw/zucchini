@@ -24,7 +24,6 @@ recommends:
   Config::General: 2.37
 requires: 
   Carp: 0
-  Class::Std: 0.0.8
   Config::Any: 0.09
   Digest::MD5: 2.36
   File::Basename: 0
@@ -41,4 +40,4 @@ requires:
   Path::Class: 0.16
   Template: 2.19
   version: 0
-version: 0.0.10
+version: 0.0.11
