@@ -305,9 +305,11 @@ sub process_file {
             )
         ) {
             warn (q{Copying: } . $self->item_name($directory, $item) . qq{\n});
+            # the ".q{}" forces stringification and resolves issues with
+            # File::Copy::_eq() in perl-5.10
             copy(
-                file($directory,$item),
-                file($config->{output_dir},$relpath,$item)
+                file($directory,$item) . q{},
+                file($config->{output_dir},$relpath,$item) . q{}
             );
             $self->show_destination($directory, $item);
         }
