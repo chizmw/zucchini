@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 # Define metadata
 name            'Zucchini';
-version         '0.0.10';
+version         '0.0.11';
 author          'Chisel Wright<chiselwright@users.berlios.de>';
 license         'perl';
 abstract        'turn templates into static websites';
@@ -12,7 +12,6 @@ abstract        'turn templates into static websites';
 # Specific dependencies
 requires(
     'Carp'                          => 0, # core with perl5
-    'Class::Std'                    => '0.0.8',
     'Config::Any'                   => '0.09',
     'Digest::MD5'                   => '2.36',
     'File::Basename'                => 0, # core with perl5
