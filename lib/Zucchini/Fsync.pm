@@ -36,6 +36,8 @@ has remote_digest => (
     isa     => 'Str',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 sub BUILD {
     my $self = shift;
 

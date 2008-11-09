@@ -2,6 +2,8 @@ package Zucchini::Config::Create;
 # vim: ts=8 sts=4 et sw=4 sr sta
 use Moose; # automatically turns on strict and warnings
 
+__PACKAGE__->meta->make_immutable;
+
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
 use IO::File;

@@ -25,6 +25,8 @@ has ttobject => (
     isa     => 'Template',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 sub process_site {
     my $self = shift;
     my $directory = $self->get_config->get_siteconfig->{source_dir};

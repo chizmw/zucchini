@@ -26,6 +26,8 @@ has site => (
     isa     => 'Str',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 
 sub BUILD {
     my ($self, $arg_ref) = @_;

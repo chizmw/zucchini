@@ -15,6 +15,8 @@ has config => (
     isa     => 'Zucchini::Config',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 sub remote_sync {
     my $self = shift;
 
