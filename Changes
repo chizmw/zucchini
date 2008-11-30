@@ -1,7 +1,8 @@
 This file documents the revision history for Zucchini
 
-0.0.12
+0.0.12  Sun Nov 30 14:40:01 GMT 2008
     - make moose packages immutable
+    - added cli_defaults to .zucchini configuration file
 
 0.0.11  Tue Aug 26 08:44:09 BST 2008
     - removed Class::Std dependency
