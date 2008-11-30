@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 BEGIN {
     use_ok 'Zucchini::Config';
@@ -61,6 +61,21 @@ $zucchini_cfg = Zucchini::Config->new(
     {
         config_data => $test_config->site_config,
         site => q{second_site},
+    }
+);
+isa_ok($zucchini_cfg, q{Zucchini::Config});
+is(
+    $zucchini_cfg->get_site(),
+    q{second_site},
+    q{->get_site() returns correct value}
+);
+
+# test 'defaults' - default CLI options in the config file
+# the options should set --site for us
+$zucchini_cfg = Zucchini::Config->new(
+    {
+        config_data => $test_config->site_config_with_cli_defaults,
+        #site => q{second_site},
     }
 );
 isa_ok($zucchini_cfg, q{Zucchini::Config});

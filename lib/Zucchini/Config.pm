@@ -57,6 +57,15 @@ sub BUILD {
         $self->_load_config();
     }
 
+    # see if we have any CLI options to inject from the config file
+    if (defined $self->get_data()->{cli_defaults}) {
+        my %merged_cli_options = (
+            %{ $self->get_data->{cli_defaults} },
+            %{ $self->get_options }
+        );
+        $self->set_options( \%merged_cli_options );
+    }
+
     # if we don't have a config file - abort
     if (not defined $self->get_data) {
         warn (
@@ -67,10 +76,10 @@ sub BUILD {
     }
 
     # deal with user options
-    if ($arg_ref->{site}) {
+    if (defined $self->get_options->{site}) {
         warn "using user-specified site label\n"
             if ($self->verbose(2));
-        $self->set_site( delete $arg_ref->{site} );
+        $self->set_site( delete $self->get_options->{site} );
     }
 
     # if we don't have a site specified, try to use a default
@@ -593,6 +602,25 @@ readable to yourself:
 
 =back
 
+=head2 SETTING DEFAULT COMMAND-LINE VALUES
+
+Sometimes it can be tedious adding the same command-line switches to calls to
+zucchini.
+
+You can preset commonly used options in the I<cli_defaults> section of your
+I<.zucchini> file:
+
+  <cli_defaults>
+    verbose         1
+    showdest        1
+    showpath        1
+  </cli_defaults>
+
+Any options specified on the command-line will take precedence over the
+defaults in the I<.zucchini> file.
+
+  # we don't really want to see the destination
+  zucchini --no-showdest
 
 =head1 SEE ALSO
 

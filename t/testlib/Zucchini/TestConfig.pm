@@ -153,6 +153,20 @@ sub site_config {
     return $test_config;
 }
 
+sub site_config_with_cli_defaults {
+    my $self = shift;
+
+    # get the test config
+    my $test_config = $self->site_config;
+
+    # add the defaults
+    $test_config->{cli_defaults} = {
+        site    => 'second_site',
+    };
+
+    return $test_config;
+}
+
 1;
 
 __END__
