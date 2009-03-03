@@ -1,5 +1,8 @@
 This file documents the revision history for Zucchini
 
+0.0.13
+    NO WORK YET
+
 0.0.12  Sun Nov 30 14:40:01 GMT 2008
     - make moose packages immutable
     - added cli_defaults to .zucchini configuration file
