@@ -13,3 +13,4 @@
 .shipit
 Makefile.old
 MANIFEST.bak
+\.DS_Store
