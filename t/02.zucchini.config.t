@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 11;
 
 BEGIN {
     use_ok 'Zucchini::Config';
@@ -83,4 +83,24 @@ is(
     $zucchini_cfg->get_site(),
     q{second_site},
     q{->get_site() returns correct value}
+);
+
+# get the tt_site config, and make sure it has the expected options
+$zucchini_cfg = Zucchini::Config->new(
+    {
+        config_data => $test_config->site_config,
+        site => q{ttoption_site},
+    }
+);
+isa_ok($zucchini_cfg, q{Zucchini::Config});
+is(
+    $zucchini_cfg->get_site(),
+    q{ttoption_site},
+    q{->get_site() returns correct value}
+);
+# does it have tt_options?
+is (
+    ref($zucchini_cfg->get_siteconfig()->{tt_options}),
+    q{HASH},
+    q{ttoption_site has tt_options}
 );

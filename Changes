@@ -1,7 +1,7 @@
 This file documents the revision history for Zucchini
 
 0.0.13
-    NO WORK YET
+    - add tt_option to config (passed thorugh as Template::Toolkit options)
 
 0.0.12  Sun Nov 30 14:40:01 GMT 2008
     - make moose packages immutable

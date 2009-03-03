@@ -233,18 +233,7 @@ sub process_file {
         # only create the template object once - it's stupid to create
         # a new one for each file we template
         if (not defined $self->get_ttobject) {
-            my $tt_config = {
-                ABSOLUTE        => 1,
-                EVAL_PERL       => 0,
-                INCLUDE_PATH    => "$config->{source_dir}:$config->{includes_dir}",
-            };
-            if (defined $config->{plugin_base}) {
-                $tt_config->{PLUGIN_BASE} = $config->{plugin_base};
-            }
-
-            $self->set_ttobject(
-                Template->new( $tt_config )
-            );
+            $self->_prepare_template_object;
         }
 
         # if the template and the destination have the same timestamp, nothing's changed
@@ -397,6 +386,37 @@ sub template_file {
             return 1;
         }
     }
+
+    return;
+}
+
+sub _prepare_template_object {
+    my $self    = shift;
+    my $config  = $self->get_config->get_siteconfig();
+    #my $cliopt  = $self->get_config->get_options();
+
+    my $tt_config = {
+        ABSOLUTE        => 1,
+        EVAL_PERL       => 0,
+        INCLUDE_PATH    => "$config->{source_dir}:$config->{includes_dir}",
+    };
+    if (defined $config->{plugin_base}) {
+        $tt_config->{PLUGIN_BASE} = $config->{plugin_base};
+    }
+
+    # if we've been given any tt_options, merge them into the config
+    # now
+    if (defined $config->{tt_options}) {
+        my %merged_cfg = (
+            %{ $tt_config },
+            %{ $config->{tt_options} }
+        );
+        $tt_config = \%merged_cfg;
+    }
+
+    $self->set_ttobject(
+        Template->new( $tt_config )
+    );
 
     return;
 }

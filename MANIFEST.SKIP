@@ -1,7 +1,8 @@
 ^Makefile$
 ^Zucchini.*\.tar\.gz
 \.par$
-\..*\.sw.$
+\..
+*\.sw.$
 \.tmp$
 \.old$
 ^blib

@@ -138,6 +138,25 @@ sub site_config {
                     email       => "c&#104;isel&#64;chizography.net",
                 },
             },
+            'ttoption_site' => {
+                source_dir      => 'XXWILLBEOVERRIDDENXX',
+                includes_dir    => 'XXWILLBEOVERRIDDENXX',
+                output_dir      => 'XXWILLBEOVERRIDDENXX',
+                template_files  => "\\.html\\z",
+                ignore_dirs     => ["CVS", ".svn", "tmp"],
+                ignore_files    => ["\\.swp\\z"],
+                tags => {
+                    author      => "Chisel Wright",
+                    copyright   => "&copy; 2006-2008 Chisel Wright. All rights reserved.",
+                    email       => "c&#104;isel&#64;chizography.net",
+                },
+
+                tt_options => {
+                    PRE_PROCESS     => 'my_header',
+                    POST_PROCESS    => 'my_footer',
+                    EVAL_PERL       => 1,
+                },
+            },
         },
     };
 
