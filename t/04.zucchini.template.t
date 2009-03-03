@@ -42,6 +42,8 @@ can_ok(
         same_file
         show_destination
         template_file
+        
+        _prepare_template_object
     )
 );
 
