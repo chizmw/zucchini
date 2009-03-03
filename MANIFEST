@@ -2,8 +2,6 @@ Build.PL
 Changes
 doc/s5/images/zucchini.jpg
 doc/s5/s5-blank.html
-doc/s5/ui/.DS_Store
-doc/s5/ui/default/.DS_Store
 doc/s5/ui/default/blank.gif
 doc/s5/ui/default/bodybg.gif
 doc/s5/ui/default/framing.css
@@ -15,7 +13,6 @@ doc/s5/ui/default/print.css
 doc/s5/ui/default/s5-core.css
 doc/s5/ui/default/slides.css
 doc/s5/ui/default/slides.js
-doc/s5/ui/herlpacker/.DS_Store
 doc/s5/ui/herlpacker/blank.gif
 doc/s5/ui/herlpacker/bodybg-faint.jpg
 doc/s5/ui/herlpacker/bodybg.gif
