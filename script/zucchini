@@ -16,7 +16,7 @@ my ($zucchini, %cliopt);
 # get command-line options from user
 GetOptions (
     \%cliopt,
-    'config_file=s',
+    'config_file|f=s',
     'create-config!',
     'dry-run!',
     'force!',
