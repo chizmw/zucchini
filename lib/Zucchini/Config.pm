@@ -25,6 +25,12 @@ has site => (
     writer  => 'set_site',
     isa     => 'Str',
 );
+has config_file => (
+    reader  => 'get_config_file',
+    writer  => 'set_config_file',
+    isa     => 'Str',
+    default => sub {q{}.file($ENV{HOME}, q{.zucchini})},
+);
 
 __PACKAGE__->meta->make_immutable;
 
@@ -38,7 +44,7 @@ sub BUILD {
         my $zucchini_cfg_create = Zucchini::Config::Create->new();
 
         $zucchini_cfg_create->write_default_config(
-            file($ENV{HOME}, q{.zucchini})
+            $self->get_config_file
         );
 
         exit;
@@ -69,7 +75,7 @@ sub BUILD {
     # if we don't have a config file - abort
     if (not defined $self->get_data) {
         warn (
-                file($ENV{HOME}, q{.zucchini})
+                $self->get_config_file
             . qq{: configuration file not found, use 'create-config' option to create one\n}
         );
         exit;
@@ -208,7 +214,7 @@ sub verbose {
 sub _load_config {
     my $self    = shift;
 
-    my $config_file = file($ENV{HOME}, q{/.zucchini});
+    my $config_file = $self->get_config_file;
 
     # read/load/parse the config file
     my $cfg = Config::Any->load_files(
