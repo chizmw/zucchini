@@ -110,7 +110,7 @@ is (
 #
 $zucchini_cfg = Zucchini::Config->new(
     {
-        config_file => qq{$FindBin::Bin/test_data/config/cli_alt}
+        config_file => qq{$FindBin::Bin/testdata/config/cli_alt}
     }
 );
 isa_ok($zucchini_cfg, q{Zucchini::Config});
