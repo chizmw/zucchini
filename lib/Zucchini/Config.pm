@@ -63,15 +63,6 @@ sub BUILD {
         $self->_load_config();
     }
 
-    # see if we have any CLI options to inject from the config file
-    if (defined $self->get_data()->{cli_defaults}) {
-        my %merged_cli_options = (
-            %{ $self->get_data->{cli_defaults} },
-            %{ $self->get_options }
-        );
-        $self->set_options( \%merged_cli_options );
-    }
-
     # if we don't have a config file - abort
     if (not defined $self->get_data) {
         warn (
@@ -79,6 +70,15 @@ sub BUILD {
             . qq{: configuration file not found, use 'create-config' option to create one\n}
         );
         exit;
+    }
+
+    # see if we have any CLI options to inject from the config file
+    if (defined $self->get_data()->{cli_defaults}) {
+        my %merged_cli_options = (
+            %{ $self->get_data->{cli_defaults} },
+            %{ $self->get_options }
+        );
+        $self->set_options( \%merged_cli_options );
     }
 
     # deal with user options

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 13;
 
 BEGIN {
     use_ok 'Zucchini::Config';
@@ -103,4 +103,19 @@ is (
     ref($zucchini_cfg->get_siteconfig()->{tt_options}),
     q{HASH},
     q{ttoption_site has tt_options}
+);
+
+#
+# test the "config_file" override
+#
+$zucchini_cfg = Zucchini::Config->new(
+    {
+        config_file => qq{$FindBin::Bin/config/cli_alt}
+    }
+);
+isa_ok($zucchini_cfg, q{Zucchini::Config});
+is(
+    $zucchini_cfg->get_site(),
+    q{alt1},
+    q{->get_site() returns correct value}
 );

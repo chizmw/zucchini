@@ -16,6 +16,7 @@ my ($zucchini, %cliopt);
 # get command-line options from user
 GetOptions (
     \%cliopt,
+    'config_file=s',
     'create-config!',
     'dry-run!',
     'force!',
@@ -71,6 +72,7 @@ TODO
   zucchini [options]
 
     --site=LABEL    process the site called LABEL
+    --config=FILE   use an alternative configuration file
 
     --force         force all templates to be regenerated
     --showpath      show paths relative from site's <source_dir>
