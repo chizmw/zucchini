@@ -298,6 +298,11 @@ Zucchini::Config - manage configuration file loading
   # get a new config object
   my $zcfg = Zucchini::Config->new();
 
+  # get a new config object (using an alternative file)
+  my $zcfg = Zucchini::Config->new(
+    { config_file => $some_other_file }
+  );
+
   # get the parsed config data
   my $stuff = $zcfg->get_data();
 
@@ -315,6 +320,13 @@ All examples will assume the user is using the Config::General format.
 
 The C<.zucchini> configuration file is the governing force
 for the behaviour of the various Zucchini components.
+
+The default location for the configuration is set to
+
+  $ENV{HOME}/.zucchini
+
+This is usually overridden by using the C<--config=FILE> option when
+using script/zucchini.
 
 The file takes the following general form:
 
@@ -661,7 +673,8 @@ L<Zucchini>,
 L<Zucchini::Fsync>,
 L<Zucchini::Rsync>,
 L<Config::Any>,
-L<Config::General>
+L<Config::General>,
+L<Template::Manual::Config>
 
 =head1 AUTHOR
 
