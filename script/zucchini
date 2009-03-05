@@ -73,6 +73,7 @@ TODO
 
     --site=LABEL    process the site called LABEL
     --config=FILE   use an alternative configuration file
+                    [you may also use -f FILE]
 
     --force         force all templates to be regenerated
     --showpath      show paths relative from site's <source_dir>
