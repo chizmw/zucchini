@@ -17,26 +17,41 @@ has templatedir => (
     reader  => 'get_templatedir',
     writer  => 'set_templatedir',
     isa     => 'Path::Class::Dir',
+    default => sub {
+        dir(
+            $FindBin::Bin,
+            'testdata',
+            'templates'
+        )
+    },
 );
 has includedir => (
     reader  => 'get_includedir',
     writer  => 'set_includedir',
     isa     => 'Path::Class::Dir',
+    default => sub {
+        dir(
+            $FindBin::Bin,
+            'testdata',
+            'includes'
+        )
+    },
 );
 has outputdir => (
     reader  => 'get_outputdir',
     writer  => 'set_outputdir',
     isa     => 'Str',
-);
-has outputdir => (
-    reader  => 'get_outputdir',
-    writer  => 'set_outputdir',
-    isa     => 'Str',
+    default => sub {
+        tempdir( CLEANUP => 1 )
+    },
 );
 has rsyncpath => (
     reader  => 'get_rsyncpath',
     writer  => 'set_rsyncpath',
     isa     => 'Str',
+    default => sub {
+        tempdir( CLEANUP => 1 )
+    },
 );
 has config => (
     reader  => 'get_config',
@@ -47,33 +62,6 @@ has config => (
 sub BUILD {
     my ( $self, $arg_ref ) = @_;
     my ( $zcfg );
-
-    # work out the template dir
-    $self->set_templatedir(
-        dir(
-            $FindBin::Bin,
-            'testdata',
-            'templates'
-        )
-    );
-    # work out the include dir
-    $self->set_includedir(
-        dir(
-            $FindBin::Bin,
-            'testdata',
-            'includes'
-        )
-    );
-
-    # set a temporary directory for templating output
-    $self->set_outputdir(
-        tempdir( CLEANUP => 1 )
-    );
-
-    # set a temporary directory for templating output
-    $self->set_rsyncpath(
-        tempdir( CLEANUP => 1 )
-    );
 
     # create a new config object
     $zcfg = Zucchini::Config->new(
@@ -156,6 +144,21 @@ sub site_config {
                     POST_PROCESS    => 'my_footer',
                     EVAL_PERL       => 1,
                 },
+            },
+            impressum => {
+                ignore_dirs     => ["CVS", ".svn", "tmp"],
+                ignore_files    => ["\\.swp\\z"],
+                includes_dir    => "XXWILLBEOVERRIDDENXX",
+                output_dir      => "XXWILLBEOVERRIDDENXX",
+                source_dir      => "XXWILLBEOVERRIDDENXX",
+                template_files  => "\\.html\\z",
+
+                tags => { },
+
+                always_process  => [
+                    q{impressum.html},
+                    q{\\.imp},
+                ],
             },
         },
     };
