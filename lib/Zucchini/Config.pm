@@ -373,6 +373,9 @@ general form:
 
     template_files      \.html\z
 
+    always_process      impressum.html
+    always_process      \.imp\z
+
     ignore_dirs         CVS
     ignore_dirs         .svn
 
@@ -509,6 +512,31 @@ new row for each filetype you require.
 
 The value used should be a perl regexp that can be applied to a filename.
 If in doubt, copy an existing rule and modify the '.html'.
+
+=item always_process
+
+Found in a "sitelabel" block, this option specifies which files should always
+be processed regardless of their modification time.
+
+    # always process *.imp files
+    always_process      '\.imp\z'
+
+You can specify as many items as you require. B<Each value is interpolated into
+a regular expression>.
+
+This means that
+
+    # this probably doesn't do what you think ...
+    always_process      dex.html
+
+will cause B<all> of your C<index.html> files to be processed. Instead use
+something like:
+
+    # you need to use start- and end- of string anchors
+    always_process      \Adex.html\z
+
+C<\A> and C<\z> are similar to C<^> amd C<$>. See L<perlre/Assertions> for
+more details.
 
 =item ignore_dirs
 
@@ -663,6 +691,7 @@ options by reading L<Template::Manual::Config>'s manual.
         POST_PROCESS    my_footer
         EVAL_PERL       1
     </tt_options>
+
 =back
 
 =head2 SETTING DEFAULT COMMAND-LINE VALUES
@@ -687,12 +716,13 @@ defaults in the I<.zucchini> file.
 
 =head1 SEE ALSO
 
-L<Zucchini>,
-L<Zucchini::Fsync>,
-L<Zucchini::Rsync>,
 L<Config::Any>,
 L<Config::General>,
-L<Template::Manual::Config>
+L<perlre/Assertions>,
+L<Template::Manual::Config>,
+L<Zucchini>,
+L<Zucchini::Fsync>,
+L<Zucchini::Rsync>
 
 =head1 AUTHOR
 
