@@ -21,6 +21,13 @@ Zucchini::Contributors - people that helped out along the way
 
 Chisel Wright C<< <chiselwright@users.berlios.de> >>
 
+=head1 IDEAS and FEEDBACK
+
+=head2 Kurt vom Walde
+
+General positive feedback. Numerous functionality suggestions: --config,
+always_follow, TT options and more.
+
 =head1 INTERFACE
 
 =head2 Jason Tang
