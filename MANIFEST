@@ -39,7 +39,7 @@ legacy/ttsite.original
 lib/Zucchini.pm
 lib/Zucchini/Config.pm
 lib/Zucchini/Config/Create.pm
-lib/Zucchini/Contributors.pm
+lib/Zucchini/Contributors.pod
 lib/Zucchini/Fsync.pm
 lib/Zucchini/Manual/Tutorial.pod
 lib/Zucchini/Rsync.pm
@@ -61,6 +61,11 @@ t/04.zucchini.template.t
 t/05.zucchini.rsync.t
 t/06.zucchini.fsync.t
 t/10.site.t
+t/11.impressum.t
+t/testdata/config/cli_alt
+t/testdata/impressum/impressum.html
+t/testdata/impressum/normal.html
+t/testdata/impressum/special.imp
 t/testdata/includes/footer.tt
 t/testdata/includes/header.tt
 t/testdata/templates/_should_be_ignored_.swp
