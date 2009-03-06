@@ -4,6 +4,7 @@ This file documents the revision history for Zucchini
     - replace hard-coded path to config with object accessor that defaults to
       our previously hard-coded value
     - add --config switch to script/zucchini
+    - add "always_process" functionality
 
 0.0.13  Tue Mar  3 20:48:25 GMT 2009
     - update copyright date

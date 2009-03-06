@@ -239,7 +239,10 @@ sub process_file {
         # if the template and the destination have the same timestamp, nothing's changed
         # HOWEVER, we only care if we're not forcing the template-output to be regenerated
         if (not $cliopt->{force}) {
-            if (not $self->file_modified(
+            if ($self->always_process($item)) {
+                # bypass modified check
+            }
+            elsif (not $self->file_modified(
                     file($directory,$item),
                     file($config->{output_dir},$relpath,$item)
                 )
@@ -389,6 +392,29 @@ sub template_file {
 
     return;
 }
+
+sub always_process {
+    my ($self,$filename) = @_;
+    my $config  = $self->get_config->get_siteconfig();
+
+    # if we haven't got anything listed in our siteconfig, we don't have any
+    # special cases to worry about
+    return
+        if (not defined($self->get_config->always_process));
+
+    # loop through our special cases ...
+    foreach my $always_process (@{ $self->get_config->always_process }) {
+        my $regex = qr/ $always_process /x;
+
+        if ($filename =~ $regex) {
+            return 1;
+        }
+    }
+
+    return;
+}
+
+
 
 sub _prepare_template_object {
     my $self    = shift;

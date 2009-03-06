@@ -205,6 +205,24 @@ sub templated_files {
     return $templated;
 }
 
+sub always_process {
+    my $self = shift;
+
+    my $always_process = $self->get_siteconfig()->{always_process};
+
+    return
+        unless defined $always_process;
+
+    if (ref($always_process) eq q{ARRAY}) {
+        # do nothing - it's already a list-ref
+    }
+    else {
+        $always_process = [ $always_process ];
+    }
+
+    return $always_process;
+}
+
 sub verbose {
     my $self    = shift;
     my $level   = shift || 1;

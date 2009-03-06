@@ -151,7 +151,10 @@ sub site_config {
                 includes_dir    => "XXWILLBEOVERRIDDENXX",
                 output_dir      => "XXWILLBEOVERRIDDENXX",
                 source_dir      => "XXWILLBEOVERRIDDENXX",
-                template_files  => "\\.html\\z",
+                template_files  => [
+                    "\\.html\\z",
+                    "\\.imp\\z",
+                ],
 
                 tags => { },
 

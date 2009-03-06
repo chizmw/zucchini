@@ -26,6 +26,7 @@ can_ok(
         set_site
         get_siteconfig
 
+        always_process
         ignored_directories
         ignored_files
         is_dry_run

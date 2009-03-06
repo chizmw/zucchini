@@ -75,7 +75,7 @@ foreach my $file (keys %testinfo_of) {
 }
 
 # process the site a second time
-sleep(1);
+sleep(1); # make sure there's at least 1 second difference for modified files
 $zucchini->process_templates;
 
 foreach my $file (keys %testinfo_of) {
@@ -102,5 +102,3 @@ foreach my $file (keys %testinfo_of) {
         );
     }
 }
-use Data::Dump qw(pp);
-diag pp \%testinfo_of;
