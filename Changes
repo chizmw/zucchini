@@ -1,7 +1,13 @@
 This file documents the revision history for Zucchini
 
-0.0.15
+0.0.16
     NO WORK YET
+
+0.0.15  Sun Mar  8 10:30:18 GMT 2009
+    Maintenance Tweak Release
+       Module::Install no longer supports Build.PL.
+       It was impossible to maintain duel backends, and has been deprecated.
+       Please remove all Build.PL files and only use the Makefile.PL installer.
 
 0.0.14  Fri Mar  6 19:17:39 GMT 2009
     - replace hard-coded path to config with object accessor that defaults to
