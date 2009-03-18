@@ -1,5 +1,8 @@
 This file documents the revision history for Zucchini
 
+0.0.17
+    NO WORK YET
+
 0.0.16  Wed Mar 18 19:12:05 GMT 2009
     - add Config::General as a requirement for builds/tests
     - only do the rsync if we don't (appear to) require a password
