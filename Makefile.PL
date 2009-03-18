@@ -32,6 +32,7 @@ requires(
 
 # dependencies for building/testing
 build_requires(
+    'Config::General'               => '2.37',
     'File::Find'                    => 0, # core with perl5
     'File::Temp'                    => '0.18',
     'Test::File::Contents'          => '0.05',

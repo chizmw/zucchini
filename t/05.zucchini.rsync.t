@@ -2,7 +2,7 @@
 # vim: ts=8 sts=4 et sw=4 sr sta
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 BEGIN {
     use FindBin;
@@ -47,13 +47,19 @@ $zucchini_rsync->get_config->set_options(
     }
 );
 
-diag $zucchini_rsync->get_config->get_siteconfig->{rsync}{path};
-$zucchini_rsync->remote_sync();
+# only do the rsync if we don't (appear to) require a password
+eval {
+    local $SIG{ALRM} = sub { die "alarm\n" }; # NB: \n required
+    alarm 5;
+    $zucchini_rsync->remote_sync();
+    alarm 0;
+};
 
+SKIP: {
+    skip
+        q{remote_sync() taking too long; assuming stuck at password prompt}, 1
+            if (my $e = $@);
+    ok(1, q{dummy test until we compare directories});
+}
 
-use File::Find;
-find(
-    sub { -r && print },
-    $zucchini_rsync->get_config->get_siteconfig->{rsync}{path}
-);
-
+# it would be nice to reset the terminal/STDOUT if we triggered the alarm
