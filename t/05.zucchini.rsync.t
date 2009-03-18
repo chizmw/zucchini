@@ -59,7 +59,11 @@ SKIP: {
     skip
         q{remote_sync() taking too long; assuming stuck at password prompt}, 1
             if (my $e = $@);
-    ok(1, q{dummy test until we compare directories});
-}
+
+    TODO: {
+        local $TODO = q{Write directory comparison test};
+        ok(0, q{compare directories});
+    };
+};
 
 # it would be nice to reset the terminal/STDOUT if we triggered the alarm
