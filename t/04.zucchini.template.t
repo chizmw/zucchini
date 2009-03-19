@@ -158,8 +158,3 @@ is(
     1,
     q{EVAL_PERL is enabled}
 );
-
-
-
-use Data::Dump qw(pp);
-#diag pp $tt_service;

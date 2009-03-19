@@ -1,7 +1,7 @@
 This file documents the revision history for Zucchini
 
-0.0.17
-    NO WORK YET
+0.0.17  Thu Mar 19 22:42:41 GMT 2009
+    - removed "use Data::Dump" from t/04.zucchini.template.t
 
 0.0.16  Wed Mar 18 19:12:05 GMT 2009
     - add Config::General as a requirement for builds/tests
