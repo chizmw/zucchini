@@ -1,6 +1,7 @@
 package Zucchini::Template;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moose; # automatically turns on strict and warnings
+use Moo; # automatically turns on strict and warnings
+use Zucchini::Types qw(:all);
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -16,16 +17,16 @@ use Template;
 has config => (
     reader  => 'get_config',
     writer  => 'set_config',
-    isa     => 'Zucchini::Config',
+    isa     => ZucchiniConfig,
+    is      => 'ro',
 );
 
 has ttobject => (
     reader  => 'get_ttobject',
     writer  => 'set_ttobject',
-    isa     => 'Template',
+    isa     => TemplateToolkit,
+    is      => 'ro',
 );
-
-__PACKAGE__->meta->make_immutable;
 
 sub process_site {
     my $self = shift;
@@ -108,10 +109,10 @@ sub directory_contents {
     my (@list);
 
     # get a list of everything (except . and ..) in $directory
-    opendir(DIR, $directory)
+    opendir(my $dh, $directory)
         or die("can't open '$directory': $!\n");
 
-    @list = grep { $_ !~ /^\.\.?$/ } readdir(DIR);
+    @list = grep { $_ !~ /^\.\.?$/ } readdir($dh);
 
     return @list;
 }
@@ -122,11 +123,11 @@ sub file_checksum {
     my ($md5);
 
     # try to open the file
-    open(FILE,$file) or do {
+    open(my $fh,$file) or do {
         warn "Can't open $file: $!";
         return undef;
     };
-    binmode(FILE);
+    binmode($fh);
 
     $md5 = Digest::MD5->new->addfile(*FILE)->hexdigest;
 

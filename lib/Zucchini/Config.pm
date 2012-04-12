@@ -1,6 +1,7 @@
 package Zucchini::Config;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moose; # automatically turns on strict and warnings
+use Moo; # automatically turns on strict and warnings
+use MooX::Types::MooseLike::Base qw(:all);
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -13,26 +14,28 @@ use Zucchini::Config::Create;
 has data => (
     reader  => 'get_data',
     writer  => 'set_data',
-    isa     => 'HashRef',
+    isa     => HashRef,
+    is      => 'ro',
 );
 has options => (
     reader  => 'get_options',
     writer  => 'set_options',
-    isa     => 'HashRef',
+    isa     => HashRef,
+    is      => 'ro',
 );
 has site => (
     reader  => 'get_site',
     writer  => 'set_site',
-    isa     => 'Str',
+    isa     => Str,
+    is      => 'ro',
 );
 has config_file => (
     reader  => 'get_config_file',
     writer  => 'set_config_file',
-    isa     => 'Str',
+    isa     => Str,
     default => sub {q{}.file($ENV{HOME}, q{.zucchini})},
+    is      => 'ro',
 );
-
-__PACKAGE__->meta->make_immutable;
 
 
 sub BUILD {

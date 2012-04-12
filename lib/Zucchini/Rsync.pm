@@ -1,6 +1,7 @@
 package Zucchini::Rsync;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moose; # automatically turns on strict and warnings
+use Moo; # automatically turns on strict and warnings
+use Zucchini::Types qw(:all);
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -12,10 +13,9 @@ use File::Rsync;
 has config => (
     reader  => 'get_config',
     writer  => 'set_config',
-    isa     => 'Zucchini::Config',
+    isa     => ZucchiniConfig,
+    is      => 'ro',
 );
-
-__PACKAGE__->meta->make_immutable;
 
 sub remote_sync {
     my $self = shift;

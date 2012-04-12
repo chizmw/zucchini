@@ -1,6 +1,8 @@
 package Zucchini::Fsync;
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moose; # automatically turns on strict and warnings
+use Moo; # automatically turns on strict and warnings
+use MooX::Types::MooseLike::Base qw(:all);
+use Zucchini::Types qw(:all);
 
 use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
@@ -18,25 +20,27 @@ use Path::Class;
 has config => (
     reader  => 'get_config',
     writer  => 'set_config',
-    isa     => 'Zucchini::Config',
+    isa     => ZucchiniConfig,
+    is      => 'ro',
 );
 has ftp_client => (
     reader  => 'get_ftp_client',
     writer  => 'set_ftp_client',
-    isa     => 'Net::FTP',
+    isa     => NetFTP,
+    is      => 'ro',
 );
 has ftp_root => (
     reader  => 'get_ftp_root',
     writer  => 'set_ftp_root',
-    isa     => 'Str',
+    isa     => Str,
+    is      => 'ro',
 );
 has remote_digest => (
     reader  => 'get_remote_digest',
     writer  => 'set_remote_digest',
-    isa     => 'Str',
+    isa     => Str,
+    is      => 'ro',
 );
-
-__PACKAGE__->meta->make_immutable;
 
 sub BUILD {
     my $self = shift;
