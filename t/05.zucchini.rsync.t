@@ -2,7 +2,7 @@
 # vim: ts=8 sts=4 et sw=4 sr sta
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More;
 
 BEGIN {
     use FindBin;
@@ -47,6 +47,8 @@ $zucchini_rsync->get_config->set_options(
     }
 );
 
+=for future testing
+
 # only do the rsync if we don't (appear to) require a password
 eval {
     local $SIG{ALRM} = sub { die "alarm\n" }; # NB: \n required
@@ -67,3 +69,7 @@ SKIP: {
 };
 
 # it would be nice to reset the terminal/STDOUT if we triggered the alarm
+
+=cut
+
+done_testing;
