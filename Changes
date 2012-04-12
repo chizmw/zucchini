@@ -1,6 +1,8 @@
 This file documents the revision history for Zucchini
 
 {{$NEXT}}
+
+0.0.18_01 2012-04-12 13:49:34 UTC
     - switch to Moo
     - start using Dist::Zilla for distribution management
 
