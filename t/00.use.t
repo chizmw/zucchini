@@ -3,11 +3,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 3;
 
 BEGIN {
     use_ok 'Zucchini';
     use_ok 'Zucchini::Config';
     use_ok 'Zucchini::Config::Create';
-    use_ok 'Zucchini::Version';
 }

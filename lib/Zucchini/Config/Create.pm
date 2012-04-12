@@ -1,8 +1,7 @@
 package Zucchini::Config::Create;
+# ABSTRACT: write a sample configuration file
 # vim: ts=8 sts=4 et sw=4 sr sta
 use Moo; # automatically turns on strict and warnings
-
-use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
 use IO::File;
 

@@ -1,9 +1,8 @@
 package Zucchini::Config;
+# ABSTRACT: configuration provider
 # vim: ts=8 sts=4 et sw=4 sr sta
 use Moo; # automatically turns on strict and warnings
 use MooX::Types::MooseLike::Base qw(:all);
-
-use Zucchini::Version; our $VERSION = $Zucchini::VERSION;
 
 use Carp;
 use Config::Any;
@@ -309,10 +308,6 @@ sub _sane_config {
 __END__
 
 =pod
-
-=head1 NAME
-
-Zucchini::Config - manage configuration file loading
 
 =head1 SYNOPSIS
 
@@ -726,18 +721,5 @@ L<Template::Manual::Config>,
 L<Zucchini>,
 L<Zucchini::Fsync>,
 L<Zucchini::Rsync>
-
-=head1 AUTHOR
-
-Chisel Wright C<< <chiselwright@users.berlios.de> >>
-
-=head1 LICENSE
-
-Copyright 2008-2009 by Chisel Wright
-
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
-
-See <http://www.perl.com/perl/misc/Artistic.html>
 
 =cut

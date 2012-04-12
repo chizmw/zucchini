@@ -1,3 +1,6 @@
+# PODNAME: Zucchini::Contributors
+# ABSTRACT: people that helped out along the way
+
 =pod
 
 =head1 NAME

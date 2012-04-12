@@ -1,3 +1,6 @@
+# PODNAME: Zucchini::Manual::Tutorial
+# ABSTRACT: simple website example
+
 =pod
 
 =head1 NAME

@@ -1,4 +1,5 @@
 package Zucchini::Types;
+# ABSTRACT: Moo type definitions
 use MooX::Types::MooseLike::Base;
 use base qw(Exporter);
 our @EXPORT_OK = ();
