@@ -1,7 +1,8 @@
 package Zucchini::Template;
 # ABSTRACT: process templates and output static files
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moo; # automatically turns on strict and warnings
+use Moo;
+use strict; # for kwalitee testing
 use Zucchini::Types qw(:all);
 
 use Carp;

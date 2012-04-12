@@ -1,7 +1,8 @@
 package Zucchini::Config;
 # ABSTRACT: configuration provider
 # vim: ts=8 sts=4 et sw=4 sr sta
-use Moo; # automatically turns on strict and warnings
+use Moo;
+use strict; # for kwalitee testing
 use MooX::Types::MooseLike::Base qw(:all);
 
 use Carp;
