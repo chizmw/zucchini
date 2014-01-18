@@ -1,6 +1,9 @@
 This file documents the revision history for Zucchini
 
 {{$NEXT}}
+    - Tell dzil that abby.jpg is 'bytes' not UTF-8
+    - Add optional support for html5 linting
+    - dist.ini: add Commit/Push at the end of the file
 
 0.0.18_02 2012-04-12 14:37:31 UTC
     - disable badly written and unfinished rsync test
