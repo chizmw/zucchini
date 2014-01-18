@@ -4,7 +4,7 @@ Zucchini - turn templates into static websites
 
 # VERSION
 
-version 0.0.18_02
+version 0.0.19
 
 # SYNOPSIS
 
@@ -56,7 +56,7 @@ actions to perform based on the command-line options passed to new()
     # work out what to do, and Just Do It
     $zucchini->gogogo;
 
-## process_templates
+## process\_templates
 
 This function processes the template directories and outputs the static
 website source files.
@@ -64,7 +64,7 @@ website source files.
     # generate the static site
     $zucchini->process_templates;
 
-## ftp_sync
+## ftp\_sync
 
 This function transfers the static website source files to the remote server
 using an FTP solution.
@@ -72,7 +72,7 @@ using an FTP solution.
     # transfer files to remote FTP site
     $zucchini->ftp_sync;
 
-## remote_sync
+## remote\_sync
 
 This function transfers the static website source files to the remote server
 using an rsync solution.
