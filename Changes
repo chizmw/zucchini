@@ -1,6 +1,7 @@
 This file documents the revision history for Zucchini
 
 {{$NEXT}}
+ - update preferred Bugtracker to point to github
 
 0.0.19    2014-01-18 09:54:38UTC+0000 UTC
     - Tell dzil that abby.jpg is 'bytes' not UTF-8
