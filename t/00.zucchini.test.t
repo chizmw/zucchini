@@ -8,7 +8,7 @@ use Test::More tests => 3;
 
 BEGIN {
     use FindBin;
-    use lib qq{$FindBin::Bin/testlib};
+    use lib qq{$FindBin::Bin/lib};
 }
 
 BEGIN {

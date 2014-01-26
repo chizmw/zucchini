@@ -9,7 +9,7 @@ use Test::More tests => 21;
 
 BEGIN {
     use FindBin;
-    use lib qq{$FindBin::Bin/testlib};
+    use lib qq{$FindBin::Bin/lib};
     use Zucchini::TestConfig;
     use Zucchini::Test;
 }
