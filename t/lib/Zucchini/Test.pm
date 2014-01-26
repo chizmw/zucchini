@@ -69,6 +69,10 @@ sub compare_input_output {
         $zucchini_cfg->get_siteconfig->{output_dir},
     );
 
+    # make sure we have sorted what we're comparing
+    @input_tree = sort @input_tree;
+    @output_tree = sort @output_tree;
+
     # we should have the same files in the template directory
     # and the output directory
     is_deeply(\@input_tree, \@output_tree, q{correct files in output directory});
