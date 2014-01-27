@@ -1,6 +1,8 @@
 This file documents the revision history for Zucchini
 
 {{$NEXT}}
+
+0.0.20    2014-01-27 00:03:50+00:00 Europe/London
  - update preferred Bugtracker to point to github
  - don't manually specify test deps in dist.ini
  - move tests from t/testlib/ to t/lib (RT#92333)
