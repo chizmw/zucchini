@@ -4,7 +4,7 @@ Zucchini - turn templates into static websites
 
 # VERSION
 
-version 0.0.19
+version 0.0.20
 
 # SYNOPSIS
 
@@ -27,7 +27,7 @@ Ideally the site would be written using some kind of templating
 system, so header files et al only needed to be updated once.
 
 This is where Zucchini comes in. Zucchini processes a directory
-of templates (written using [Template::Toolkit](http://search.cpan.org/perldoc?Template::Toolkit) markup) and outputs
+of templates (written using [Template::Toolkit](https://metacpan.org/pod/Template::Toolkit) markup) and outputs
 a static copy of each processed template.
 
 You now have the source for a staic website, waiting to be uploaded
@@ -82,11 +82,11 @@ using an rsync solution.
 
 # SEE ALSO
 
-[Zucchini::Config](http://search.cpan.org/perldoc?Zucchini::Config),
-[Zucchini::Fsync](http://search.cpan.org/perldoc?Zucchini::Fsync),
-[Zucchini::Rsync](http://search.cpan.org/perldoc?Zucchini::Rsync),
-[Zucchini::Template](http://search.cpan.org/perldoc?Zucchini::Template),
-[Template](http://search.cpan.org/perldoc?Template)
+[Zucchini::Config](https://metacpan.org/pod/Zucchini::Config),
+[Zucchini::Fsync](https://metacpan.org/pod/Zucchini::Fsync),
+[Zucchini::Rsync](https://metacpan.org/pod/Zucchini::Rsync),
+[Zucchini::Template](https://metacpan.org/pod/Zucchini::Template),
+[Template](https://metacpan.org/pod/Template)
 
 # AUTHOR
 
