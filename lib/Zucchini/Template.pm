@@ -129,7 +129,7 @@ sub file_checksum {
     };
     binmode($fh);
 
-    $md5 = Digest::MD5->new->addfile(*FILE)->hexdigest;
+    $md5 = Digest::MD5->new->addfile($fh)->hexdigest;
 
     return $md5;
 }
