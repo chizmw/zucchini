@@ -1,6 +1,8 @@
 This file documents the revision history for Zucchini
 
 {{$NEXT}}
+
+0.0.21    2014-03-05 21:48:33+00:00 UTC
  - fix $fh/*FILE usage in ::Template
  - add $VERSION to script/zucchini
 
