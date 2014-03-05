@@ -10,6 +10,8 @@ use Pod::Usage;
 use version;
 use Zucchini;
 
+use Zucchini;  our $VERSION = $Zucchini::VERSION;
+
 # evil globals
 my ($zucchini, %cliopt);
 
