@@ -713,6 +713,40 @@ defaults in the I<.zucchini> file.
   # we don't really want to see the destination
   zucchini --no-showdest
 
+=head1 METHODS
+
+=head2 get_config_file
+
+=head2 get_data
+
+=head2 get_options
+
+=head2 get_site
+
+=head2 get_siteconfig
+
+=head2 ignored_directories
+
+=head2 ignored_files
+
+=head2 is_dry_run
+
+=head2 is_fsync
+
+=head2 is_fsync_only
+
+=head2 is_rsync
+
+=head2 is_rsync_only
+
+=head2 templated_files
+
+=head2 verbose
+
+=head1 INTERNAL METHODS
+
+=head2 BUILD
+
 =head1 SEE ALSO
 
 L<Config::Any>,

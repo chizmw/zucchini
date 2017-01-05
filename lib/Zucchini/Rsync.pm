@@ -121,6 +121,10 @@ This function performs an upload to the remote server using File::Rsync.
   # transfer the site
   $rsyncer->remote_sync;
 
+=head2 get_config
+
+=cut
+
 =head1 SEE ALSO
 
 L<Zucchini>

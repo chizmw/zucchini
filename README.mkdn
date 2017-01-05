@@ -80,6 +80,14 @@ using an rsync solution.
     # transfer files to remote server, using rsync
     $zucchini->remote_sync;
 
+## get\_config
+
+# INTERNAL METHODS
+
+## BUILD
+
+Some Moose magic
+
 # SEE ALSO
 
 [Zucchini::Config](https://metacpan.org/pod/Zucchini::Config),

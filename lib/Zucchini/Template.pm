@@ -638,6 +638,8 @@ specified by the 'template_files' variable in the site-config.
     # do some templating magic
   }
 
+=head2 always_process
+
 =head1 SEE ALSO
 
 L<Zucchini>,

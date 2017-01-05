@@ -201,6 +201,14 @@ using an rsync solution.
   # transfer files to remote server, using rsync
   $zucchini->remote_sync;
 
+=head2 get_config
+
+=head1 INTERNAL METHODS
+
+=head2 BUILD
+
+Some Moose magic
+
 =head1 SEE ALSO
 
 L<Zucchini::Config>,

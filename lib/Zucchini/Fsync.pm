@@ -631,6 +631,12 @@ the object for later retrieval using get_ftp_client().
     $self->prepare_ftp_client;
   }
 
+=head1 INTERNAL METHODS
+
+=head2 BUILD
+
+Some Moose magic
+
 =head1 SEE ALSO
 
 L<Zucchini>,
