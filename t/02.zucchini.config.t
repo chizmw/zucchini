@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 15;
+use Test::Exception;
 
 BEGIN {
     use_ok 'Zucchini::Config';
@@ -109,11 +110,19 @@ is (
 #
 # test the "config_file" override
 #
-$zucchini_cfg = Zucchini::Config->new(
-    {
-        config_file => qq{$FindBin::Bin/testdata/config/cli_alt}
-    }
+ok(
+    -f qq{$FindBin::Bin/testdata/config/cli_alt},
+    'testdata/config/cli_alt exists'
 );
+
+lives_ok {
+    $zucchini_cfg = Zucchini::Config->new(
+        {
+            config_file => qq{$FindBin::Bin/testdata/config/cli_alt}
+        }
+    );
+} 'Zucchini::Config->new(...) lives';
+
 isa_ok($zucchini_cfg, q{Zucchini::Config});
 is(
     $zucchini_cfg->get_site(),
